@@ -4,6 +4,31 @@ export default defineNuxtConfig({
       enabled: true
    },
 
+   app: {
+      head: {
+         titleTemplate: "%s | Telemedicine Admin",
+         htmlAttrs: {
+            lang: "id",
+         },
+         meta: [
+            { name: "viewport", content: "width=device-width, initial-scale=1" },
+            { hid: "description", name: "description", content: "" },
+            { name: "format-detection", content: "telephone=no" },
+            { charset: "utf-8" },
+         ],
+         link: [
+            { rel: 'preconnect', href: 'ttps://fonts.bunny.net' },
+            { rel: 'stylesheet', href: 'https://fonts.bunny.net/css?family=lato:100,100i,300,300i,400,400i,700,700i,900,900i' }
+         ]
+      },
+   },
+
+   ssr: false,
+
+   devServer: {
+      port: 6000
+   },
+
    css: [
       '~/assets/css/base.css'
    ],
@@ -39,7 +64,8 @@ export default defineNuxtConfig({
    },
 
    dayjs: {
-      locales: [ 'id', 'en' ],
+      locales: ['id', 'en'],
+      plugins: ['relativeTime', 'utc', 'timezone'],
       defaultLocale: 'id',
       defaultTimezone: 'Asia/Jakarta'
    }
