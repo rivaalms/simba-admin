@@ -12,7 +12,9 @@ export default {
    ],
    theme: {
       extend: {
-         fontFamily: ['Lato', ...defaultTheme.fontFamily.sans],
+         fontFamily: {
+            sans: ['Lato', ...defaultTheme.fontFamily.sans],
+         }
       },
    },
    plugins: [],
