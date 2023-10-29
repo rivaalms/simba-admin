@@ -31,8 +31,8 @@ export default defineNuxtConfig({
 
    runtimeConfig: {
       public: {
-         apiBaseUrl: 'http://simba-api.test/api',
-         appName: 'SIMBA Admin'
+         apiBaseUrl: '',
+         appName: ''
       }
    },
 
