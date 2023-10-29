@@ -1,12 +1,13 @@
 export const useLogin = async (payload: API.Request.Login) => {
-   const response = await $fetch <API.Response <{ user: Model.User, token: string }>> (`/login`, {
-      method: 'POST'
-   })
+   const response = await useAPI (`/login`, {
+      method: 'POST',
+      body: payload
+   }) as API.Response<{ user: Model.User, token: string }>
    return response.data
 }
 
 export const useLogout = async () : Promise <void> => {
-   await $fetch <API.Response <null>> (`/logout`, {
+   await useAPI (`/logout`, {
       method: 'POST'
-   })
+   }) as API.Response <null>
 }
