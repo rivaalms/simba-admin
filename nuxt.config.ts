@@ -55,6 +55,7 @@ export default defineNuxtConfig({
    },
 
    ui: {
+      global: true,
       safelistColors: [
          'blue',
          'gray',
@@ -75,5 +76,11 @@ export default defineNuxtConfig({
       plugins: ['relativeTime', 'utc', 'timezone'],
       defaultLocale: 'id',
       defaultTimezone: 'Asia/Jakarta'
+   },
+
+   vite: {
+      define: {
+         'process.env.DEBUG': false
+      }
    }
 })
