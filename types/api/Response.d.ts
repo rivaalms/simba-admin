@@ -4,4 +4,10 @@ declare namespace API {
       message: string | null
       data: T
    }
+
+   type Error = {
+      response: {
+         _data: API.Response <null>
+      }
+   }
 }
