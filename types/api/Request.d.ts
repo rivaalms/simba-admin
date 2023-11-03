@@ -4,5 +4,10 @@ declare namespace API {
          email: string
          password: string
       }
+
+      type Data = {
+         page: number
+         per_page: number
+      }
    }
 }
