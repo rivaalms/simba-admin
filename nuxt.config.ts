@@ -47,6 +47,12 @@ export default defineNuxtConfig({
       'dayjs-nuxt'
    ],
 
+   build: {
+      transpile: [
+         '@vuepic/vue-datepicker'
+      ]
+   },
+
    postcss: {
       plugins: {
          'postcss-import': {},
@@ -65,6 +71,7 @@ export default defineNuxtConfig({
          'red',
          'amber',
          'green',
+         'emerald',
          'cyan',
       ],
    },
