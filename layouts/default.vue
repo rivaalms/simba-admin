@@ -16,4 +16,6 @@
       </div>
    </div>
 </div>
+
+<lazy-app-dialog></lazy-app-dialog>
 </template>
