@@ -63,9 +63,9 @@ export const useAppStore = defineStore('app', {
 
       notify(type: 'success' | 'error' | 'info', message: string, id?: string) {
          const typeConfig = {
-            success: { title: 'Success', color: 'green', icon: 'i-heroicons-check-circle' },
+            success: { title: 'Success', color: 'emerald', icon: 'i-heroicons-check-circle' },
             error: { title: 'Error', color: 'red', icon: 'i-heroicons-exclamation-circle' },
-            info: { title: 'Info', color: 'sky', icon: 'i-heroicons-information-circle' },
+            info: { title: 'Info', color: 'cyan', icon: 'i-heroicons-information-circle' },
          };
 
          const { title, color, icon } = typeConfig[type] || {};
