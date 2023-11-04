@@ -9,7 +9,7 @@
                :schema="validator"
                :state="state"
                :validate-on="['submit']"
-               @submit.prevent="submit"
+               @submit="submit"
             >
             <div class="grid grid-cols-1 gap-4">
                   <u-form-group
@@ -21,7 +21,6 @@
                         name="email"
                         type="email"
                         icon="i-heroicons-envelope"
-                        required
                      ></u-input>
                   </u-form-group>
 
@@ -35,7 +34,6 @@
                         icon="i-heroicons-lock-closed"
                         autocomplete
                         :type="showPassword ? 'text' : 'password'"
-                        required
                      ></u-input>
                   </u-form-group>
 
