@@ -6,8 +6,9 @@ declare namespace API {
       }
 
       type Data = {
-         page: number
-         per_page: number
+         page?: number
+         per_page?: number
+         school?: number
       }
    }
 }

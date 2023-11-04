@@ -31,4 +31,9 @@ declare namespace Util {
       label: string
       class?: string
    }
+
+   type SelectOption = {
+      label: string
+      value: string | number | null
+   }
 }
