@@ -6,6 +6,19 @@ export async function useGetData (payload: API.Request.Data) : Promise<Util.Lara
    return response.data
 }
 
+export async function useCreateData (payload: any) : Promise <any> {
+   const form = new FormData()
+   for (const i in payload) {
+      form.append(i, payload[i])
+   }
+   console.log('form', form)
+   const response = await useAPI('/data', {
+      method: 'POST',
+      body: form
+   }) as API.Response <any>
+   return response.data
+}
+
 export async function useDataCategoryOptions () : Promise <Util.SelectOption[]> {
    const response = await useAPI('/options/data-categories', {
       method: 'GET'

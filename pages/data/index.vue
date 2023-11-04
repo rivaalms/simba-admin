@@ -169,6 +169,7 @@
             <div class="col-span-2 flex items-end justify-end">
                <u-button
                   icon="i-heroicons-plus"
+                  @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData(filters))"
                >
                   Tambah Data
                </u-button>
