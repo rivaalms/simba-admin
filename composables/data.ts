@@ -1,4 +1,4 @@
-export async function useGetData (payload: API.Request.Data) : Promise<Util.LaravelPagination<Model.Data[]>> {
+export async function useGetData (payload: API.Request.Query.Data) : Promise<Util.LaravelPagination<Model.Data[]>> {
    const response = await useAPI('/data', {
       method: 'GET',
       query: payload
@@ -6,16 +6,16 @@ export async function useGetData (payload: API.Request.Data) : Promise<Util.Lara
    return response.data
 }
 
-export async function useCreateData (payload: any) : Promise <any> {
+export async function useCreateData (payload: API.Request.Form.Data) : Promise <Model.Data> {
    const form = new FormData()
    for (const i in payload) {
-      form.append(i, payload[i])
+      form.append(i, payload[i] as string | Blob)
    }
-   console.log('form', form)
+
    const response = await useAPI('/data', {
       method: 'POST',
       body: form
-   }) as API.Response <any>
+   }) as API.Response <Model.Data>
    return response.data
 }
 

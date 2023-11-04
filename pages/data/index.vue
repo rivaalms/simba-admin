@@ -223,7 +223,7 @@ const columns = [
 ]
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filters : Ref <{ [key: string]: string | number | null }> = ref({
+const filters : Ref <API.Request.Query.Data> = ref({
    school: null,
    year: null,
    category: null,
@@ -298,7 +298,7 @@ onBeforeMount(async () => {
       })
 })
 
-const fetchData = async (payload: API.Request.Data) => {
+const fetchData = async (payload: API.Request.Query.Data) => {
    loading.value = true
    await useGetData(payload)
       .then(resp => {
