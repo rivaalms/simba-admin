@@ -1,10 +1,36 @@
 import type { NotificationColor } from "@nuxt/ui/dist/runtime/types"
 
+namespace State {
+   export type Callback = (() => void) | (() => Promise <void>)
+   export type App = {
+      pageTitle: string,
+      dialog: {
+         id: string
+         show: boolean
+         title: string
+         data?: any
+         callback?: Callback
+      }
+   }
+
+   export type Auth = {
+      user: Model.User | null
+      token: string | null
+   }
+}
+
 export const useAppStore = defineStore('app', {
    persist: true,
 
    state: () : State.App => ({
-      pageTitle: ''
+      pageTitle: '',
+      dialog: {
+         id: '',
+         show: false,
+         title: '',
+         data: null,
+         callback: () => {}
+      }
    }),
 
    getters: {
@@ -12,6 +38,29 @@ export const useAppStore = defineStore('app', {
    },
 
    actions: {
+      showDialog(id: string, title: string, data?: any, callback?: State.Callback) {
+         this.dialog = {
+            id,
+            title,
+            data,
+            callback,
+            show: true
+         }
+      },
+
+      clearDialog() {
+         this.dialog.show = false
+         setTimeout(() => {
+            this.dialog = {
+               id: '',
+               show: false,
+               title: '',
+               data: null,
+               callback: () => {}
+            }
+         }, 300)
+      },
+
       notify(type: 'success' | 'error' | 'info', message: string, id?: string) {
          const typeConfig = {
             success: { title: 'Success', color: 'green', icon: 'i-heroicons-check-circle' },
@@ -68,14 +117,3 @@ export const useAuthStore = defineStore('auth', {
       }
    }
 })
-
-namespace State {
-   export type App = {
-      pageTitle: string
-   }
-
-   export type Auth = {
-      user: Model.User | null
-      token: string | null
-   }
-}
