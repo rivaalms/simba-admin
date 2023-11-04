@@ -18,6 +18,7 @@
             searchable
             :search-attributes="['label']"
             searchable-placeholder="Cari..."
+            :disabled="loading"
          >
             <template #label>
                <template v-if="!state.school_id">
@@ -47,6 +48,7 @@
                v-model="(state.year as string)"
                input-class="cursor-pointer"
                readonly
+               :disabled="loading"
             ></u-input>
          </app-date-picker>
       </u-form-group>
@@ -62,6 +64,7 @@
             searchable
             :search-attributes="['label']"
             searchable-placeholder="Cari..."
+            :disabled="loading"
             @update:model-value="onCategoryChanged"
          >
             <template #label>
@@ -84,7 +87,7 @@
             v-model="(state.data_type_id as number)"
             :options="typeOptions"
             value-attribute="value"
-            :disabled="!category"
+            :disabled="!category || loading"
             searchable
             :search-attributes="['label']"
             searchable-placeholder="Cari..."
@@ -117,6 +120,7 @@
             searchable
             :search-attributes="['label']"
             searchable-placeholder="Cari..."
+            :disabled="loading"
          >
             <template #label>
                <template v-if="!state.data_status_id">
@@ -136,6 +140,7 @@
       >
          <u-input
             type="file"
+            :disabled="loading"
             accept=".pdf, .doc, .docx, .xls, .xlsx, application/msword, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.google-apps.document, application/vnd.google-apps.spreadsheet"
             placeholder="Upload file..."
             input-class="file:cursor-pointer file:mr-2 file:px-2 file:rounded file:bg-gray-200 file:text-gray-500 file:border-0 file:text-xs file:hover:bg-gray-300"
@@ -149,6 +154,7 @@
          color="gray"
          variant="ghost"
          icon="i-heroicons-arrow-uturn-left"
+         :disabled="loading"
          @click.stop="store.clearDialog()"
       >
          Batal
@@ -156,6 +162,7 @@
       <u-button
          color="emerald"
          icon="i-heroicons-check"
+         :loading="loading"
          type="submit"
       >
          Simpan
@@ -170,7 +177,8 @@ import * as yup from 'yup'
 const store = useAppStore()
 const dayjs = useDayjs()
 const yearPicker : Ref <string> = ref(dayjs().format('YYYY'))
-const state : Ref <{ [key: string]: string | number | null }> = ref({
+const loading : Ref <boolean> = ref(false)
+const state : Ref <API.Request.Form.Data> = ref({
    school_id: null,
    year: null,
    data_type_id: null,
@@ -224,7 +232,15 @@ const onFileChange = (e: any) => {
 }
 
 const submit = async () => {
-   console.log(state.value)
+   loading.value = true
    await useCreateData(state.value)
+      .then(resp => {
+         store.notify('success', 'Data baru berhasil disimpan', 'data-create')
+         if (store.dialog.callback) store.dialog.callback()
+         store.clearDialog()
+      })
+      .catch((error: API.Error) => store.notify('error', `${error.response._data.message || error}`, 'data-error')
+      )
+      .finally(() => loading.value = false)
 }
 </script>
