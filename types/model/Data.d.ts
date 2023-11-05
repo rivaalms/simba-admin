@@ -8,7 +8,8 @@ declare namespace Model {
       year: string
       created_at?: string | null
       updated_at?: string | null
-      school: Model.User <Model.School>
+      school: Model.School
+      type: Model.Data.Type
       status: Model.DataStatus
    }
 
