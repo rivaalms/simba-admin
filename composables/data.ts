@@ -32,9 +32,7 @@ export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
    const fileName = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
    a.href = url
    a.setAttribute('download', fileName)
-   // document.body.appendChild(a)
    a.click()
-   // document.body.removeChild(a)
    return true
 }
 
