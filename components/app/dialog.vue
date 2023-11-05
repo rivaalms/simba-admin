@@ -57,7 +57,7 @@ watch(() => store.dialog.show, async () => {
    } else {
       const component = componentMap[store.dialog.id]
       if (component) dialogComponent.value = (await component()).default
-      else dialogComponent.value = 'placeholder'
+      else dialogComponent.value = resolveComponent('DialogPlaceholder')
 
       dialogWidth.value = widthMap[store.dialog.id] || 'sm:max-w-lg'
    }
