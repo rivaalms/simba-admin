@@ -32,11 +32,13 @@ const store = useAppStore()
 const dialogComponent : Ref <string | Dialog.ResolveComponent> = ref(resolveComponent('DialogPlaceholder'))
 const dialogWidth : Ref <string> = ref('sm:max-w-lg')
 
-const componentMap : { [key: string]: string | Dialog.ResolveComponent } = {
-   'data-create': resolveComponent('LazyDialogDataForm')
+const componentMap : { [key: string]: () => Promise<any> } = {
+   'data-create': () => import('@/components/dialog/data-form.vue'),
+   'data-edit': () => import('@/components/dialog/data-form.vue'),
 }
 const widthMap : { [key: string]: string } = {
-   'data-create': 'sm:max-w-2xl'
+   'data-create': 'sm:max-w-2xl',
+   'data-edit': 'sm:max-w-2xl',
 }
 
 const dialogUI : ComputedRef <{ [key: string]: string }> = computed(() => ({
@@ -44,7 +46,7 @@ const dialogUI : ComputedRef <{ [key: string]: string }> = computed(() => ({
    width: dialogWidth.value
 }))
 
-watch(() => store.dialog.show, () => {
+watch(() => store.dialog.show, async () => {
    if (!store.dialog.show) {
       store.clearDialog()
       setTimeout(() => {
@@ -53,8 +55,8 @@ watch(() => store.dialog.show, () => {
       }, 300)
    } else {
       const component = componentMap[store.dialog.id]
-      if (component) dialogComponent.value = component
-      else dialogComponent.value = resolveComponent('DialogPlaceholder')
+      if (component) dialogComponent.value = (await component()).default
+      else dialogComponent.value = 'placeholder'
 
       dialogWidth.value = widthMap[store.dialog.id] || 'sm:max-w-lg'
    }

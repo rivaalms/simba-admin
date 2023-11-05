@@ -19,6 +19,14 @@ export async function useCreateData (payload: API.Request.Form.Data) : Promise <
    return response.data
 }
 
+export async function useUpdateData (dataId: number, payload: API.Request.Form.Data) : Promise <string> {
+   const response = await useAPI(`/data/${dataId}`, {
+      method: 'PUT',
+      body: payload
+   }) as API.Response <boolean>
+   return response.message!
+}
+
 export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
    const response = await useAPI('/data/download', {
       method: 'POST',

@@ -21,7 +21,7 @@
             :disabled="loading"
          >
             <template #label>
-               <template v-if="!state.school_id">
+               <template v-if="!state.school_id || schoolOptions.length < 1">
                   <span class="text-gray-400">Pilih sekolah...</span>
                </template>
                <template v-else>
@@ -68,7 +68,7 @@
             @update:model-value="onCategoryChanged"
          >
             <template #label>
-               <template v-if="!category">
+               <template v-if="!category || categoryOptions.length < 1">
                   <span class="text-gray-400">Pilih kategori...</span>
                </template>
                <template v-else>
@@ -97,7 +97,7 @@
                   <span class="text-gray-400">Kategori belum dipilih</span>
                </template>
                <template v-else>
-                  <template v-if="!state.data_type_id">
+                  <template v-if="!state.data_type_id || typeOptions.length < 1">
                      <span class="text-gray-400">Pilih tipe...</span>
                   </template>
                   <template v-else>
@@ -123,7 +123,7 @@
             :disabled="loading"
          >
             <template #label>
-               <template v-if="!state.data_status_id">
+               <template v-if="!state.data_status_id || statusOptions.length < 1">
                   <span class="text-gray-400">Pilih status...</span>
                </template>
                <template v-else>
@@ -134,6 +134,7 @@
       </u-form-group>
 
       <u-form-group
+         v-if="store.dialog.id.includes('create')"
          label="Upload file"
          name="file"
          required
@@ -173,16 +174,17 @@
 
 <script setup lang="ts">
 import * as yup from 'yup'
+import { useUpdateData } from '~/composables/data';
 
 const store = useAppStore()
 const dayjs = useDayjs()
 const yearPicker : Ref <string> = ref(dayjs().format('YYYY'))
 const loading : Ref <boolean> = ref(false)
 const state : Ref <API.Request.Form.Data> = ref({
-   school_id: null,
-   year: null,
-   data_type_id: null,
-   data_status_id: null,
+   school_id: store.dialog.data?.school_id || null,
+   year: store.dialog.data?.year || null,
+   data_type_id: store.dialog.data?.data_type_id || null,
+   data_status_id: store.dialog.data?.data_status_id || null,
    file: null
 })
 
@@ -191,28 +193,40 @@ const validator = yup.object({
    year: yup.string().required('Tahun ajaran harus diisi'),
    data_type_id: yup.number().typeError('Tipe data harus diisi').required('Tipe data harus diisi'),
    data_status_id: yup.number().typeError('Status harus diisi').required('Status harus diisi'),
-   file: yup.mixed().required('Data harus diisi')
+   file: yup.mixed().nullable().test('is-file-required', () =>
+   'File harus diisi', (value) => {
+      if (store.dialog.id.includes('edit')) return true
+      if (!!value) return true
+      return false
+   })
 })
 
-const category : Ref <number | null> = ref(null)
+const category : Ref <number | null> = ref(store.dialog.data?.type?.category?.id || null)
 
 const schoolOptions : Ref <Util.SelectOption[]> = ref([])
 const categoryOptions : Ref <Util.SelectOption[]> = ref([])
 const typeOptions : Ref <Util.SelectOption[]> = ref([])
 const statusOptions : Ref <Util.SelectOption[]> = ref([])
 
-onBeforeMount(async () => {
-   await useGetSchoolOptions()
+onBeforeMount(() => {
+   useGetSchoolOptions()
       .then(resp => {
          schoolOptions.value = resp
       })
 
-   await useDataCategoryOptions()
-      .then(resp => {
+   useDataCategoryOptions()
+      .then((resp) => {
          categoryOptions.value = resp
       })
 
-   await useDataStatusOptions()
+   if (category.value) {
+      useDataTypeOptions(category.value)
+         .then(resp => {
+            typeOptions.value = resp
+         })
+   }
+
+   useDataStatusOptions()
       .then(resp => {
          statusOptions.value = resp
       })
@@ -233,14 +247,20 @@ const onFileChange = (e: any) => {
 
 const submit = async () => {
    loading.value = true
-   await useCreateData(state.value)
-      .then(resp => {
-         store.notify('success', 'Data baru berhasil disimpan', 'data-create')
-         if (store.dialog.callback) store.dialog.callback()
-         store.clearDialog()
-      })
-      .catch((error: API.Error) => store.notify('error', `${error.response._data.message || error}`, 'data-error')
-      )
-      .finally(() => loading.value = false)
+   try {
+      if (store.dialog.id.includes('create')) await useCreateData(state.value)
+      else if (store.dialog.id.includes('edit')) await useUpdateData((store.dialog.data.id as number), state.value)
+      else return
+
+      const message = store.dialog.id.includes('create') ? 'Data baru berhasil disimpan' : 'Data berhasil diperbarui'
+      store.notify('success', message, 'data-form')
+      if (store.dialog.callback) store.dialog.callback()
+      store.clearDialog()
+   } catch (e: any) {
+      const error = e as API.Error
+      store.notify('error', `${error.response._data.message || error}`, 'data-error')
+   } finally {
+      loading.value = false
+   }
 }
 </script>

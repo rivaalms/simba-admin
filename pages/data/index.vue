@@ -236,7 +236,7 @@ const categoryOptions : Ref <Util.SelectOption[]> = ref([])
 const typeOptions : Ref <Util.SelectOption[]> = ref([])
 const statusOptions : Ref <Util.SelectOption[]> =ref([])
 
-const actionMenu = (row: any) => ([
+const actionMenu = (row: Model.Data) => ([
    [
       {
          label: 'Unduh data',
@@ -253,7 +253,7 @@ const actionMenu = (row: any) => ([
       {
          label: 'Sunting data',
          icon: 'i-heroicons-pencil-square',
-         click: () => { console.log(row) }
+         click: () => store.showDialog('data-edit', 'Sunting Data', row, () => fetchData(filters.value))
       }
    ],
    [
