@@ -19,6 +19,25 @@ export async function useCreateData (payload: API.Request.Form.Data) : Promise <
    return response.data
 }
 
+export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
+   const response = await useAPI('/data/download', {
+      method: 'POST',
+      body: {
+         id: data.id
+      }
+   }) as Blob
+
+   const url = window.URL.createObjectURL(response)
+   const a = document.createElement('a')
+   const fileName = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
+   a.href = url
+   a.setAttribute('download', fileName)
+   // document.body.appendChild(a)
+   a.click()
+   // document.body.removeChild(a)
+   return true
+}
+
 export async function useDataCategoryOptions () : Promise <Util.SelectOption[]> {
    const response = await useAPI('/options/data-categories', {
       method: 'GET'

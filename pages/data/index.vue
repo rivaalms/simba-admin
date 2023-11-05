@@ -241,7 +241,9 @@ const actionMenu = (row: any) => ([
       {
          label: 'Unduh data',
          icon: 'i-heroicons-folder-arrow-down',
-         click: () => { console.log(row) }
+         click: () => useDownloadFile(row)
+            .then(resp => store.notify('success', 'File berhasil diunduh'))
+            .catch((error: API.Error) => store.notify('error', error.response._data.message || 'Error downloading data'))
       },
       {
          label: 'Lihat detail',
