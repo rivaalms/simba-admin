@@ -35,6 +35,7 @@ const dialogWidth : Ref <string> = ref('sm:max-w-lg')
 const componentMap : { [key: string]: () => Promise<any> } = {
    'data-create': () => import('@/components/dialog/data-form.vue'),
    'data-edit': () => import('@/components/dialog/data-form.vue'),
+   'file-upload': () => import('@/components/dialog/file-upload.vue')
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',

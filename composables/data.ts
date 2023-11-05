@@ -27,6 +27,17 @@ export async function useUpdateData (dataId: number, payload: API.Request.Form.D
    return response.message!
 }
 
+export async function useUpdateDataFile (dataId: number, payload: Pick <API.Request.Form.Data, 'file'>) : Promise <string> {
+   const form = new FormData()
+   form.append('file', payload.file as Blob)
+
+   const response = await useAPI(`/data/file/${dataId}`, {
+      method: 'POST',
+      body: form
+   }) as API.Response <boolean>
+   return response.message!
+}
+
 export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
    const response = await useAPI('/data/download', {
       method: 'POST',

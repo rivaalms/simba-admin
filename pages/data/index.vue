@@ -254,6 +254,11 @@ const actionMenu = (row: Model.Data) => ([
          label: 'Sunting data',
          icon: 'i-heroicons-pencil-square',
          click: () => store.showDialog('data-edit', 'Sunting Data', row, () => fetchData(filters.value))
+      },
+      {
+         label: 'Sunting File',
+         icon: 'i-heroicons-document',
+         click: () => store.showDialog('file-upload', 'Upload File', row, () => fetchData(filters.value)),
       }
    ],
    [
