@@ -4,8 +4,8 @@
       <template v-if="route.children">
          <u-accordion
             :items="[route]"
-            :variant="currentRoute?.to === route.to ? 'soft' : 'ghost'"
-            :color="currentRoute?.to === route.to ? 'primary' : 'gray'"
+            :variant="route.children.includes(currentRoute!) ? 'soft' : 'ghost'"
+            :color="route.children.includes(currentRoute!) ? 'primary' : 'gray'"
             :icon="route.icon"
          >
             <template #item="{ item }">
@@ -14,7 +14,7 @@
                      <u-button
                         :to="child.to"
                         :variant="currentRoute?.to === child.to ? 'soft' : 'ghost'"
-                        :color="currentRoute?.to === route.to ? 'primary' : 'gray'"
+                        :color="currentRoute?.to === child.to ? 'primary' : 'gray'"
                         :icon="child.icon"
                      >
                         {{ child.label }}
@@ -39,5 +39,10 @@
 </template>
 
 <script setup lang="ts">
-const currentRoute = computed(() => useRoutes.find(item => item.to === useRoute().path) || null)
+const currentRoute : ComputedRef <Util.Router | null> = computed(() => {
+   const route = useRoutes.find(item => item.to === useRoute().path || item.children?.find(child => child.to === useRoute().path))
+   if (!route) return null
+   if (route.children) return route.children.find(child => child.to === useRoute().path) || null
+   return route
+})
 </script>
