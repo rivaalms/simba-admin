@@ -38,6 +38,16 @@ export async function useUpdateDataFile (dataId: number, payload: Pick <API.Requ
    return response.message!
 }
 
+export async function useDeleteData (dataId: number) : Promise <string> {
+   const response = await useAPI(`/data`, {
+      method: 'DELETE',
+      body: {
+         id: dataId
+      }
+   }) as API.Response <boolean>
+   return response.message!
+}
+
 export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
    const response = await useAPI('/data/download', {
       method: 'POST',

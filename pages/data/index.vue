@@ -266,7 +266,7 @@ const actionMenu = (row: Model.Data) => ([
          label: 'Hapus data',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => { console.log(row) }
+         click: () => store.showDialog('data-delete', 'Hapus Data', row, () => fetchData(filters.value))
       }
    ]
 ])
