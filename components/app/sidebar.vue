@@ -1,5 +1,5 @@
 <template>
-<div class="grid grid-cols-1 gap-1 px-2">
+<div class="grid grid-cols-1 gap-1">
    <template v-for="route in useRoutes">
       <template v-if="route.children">
          <u-accordion
