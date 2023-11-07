@@ -174,7 +174,6 @@
 
 <script setup lang="ts">
 import * as yup from 'yup'
-import { useUpdateData } from '~/composables/data';
 
 const store = useAppStore()
 const dayjs = useDayjs()
