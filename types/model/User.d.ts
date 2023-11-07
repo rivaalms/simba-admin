@@ -18,7 +18,12 @@ declare namespace Model {
       address: string | null
       created_at?: string | null
       updated_at?: string | null
-      user?: Model.User
+      user?: Omit <Model.User, 'created_at' | 'updated_at' | 'userable'>
+      type?: {
+         id: number
+         name: string
+      }
+      supervisor?: Omit <Model.Supervisor, 'created_at' | 'updated_at'>
    }
 
    type Supervisor = {

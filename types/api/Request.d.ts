@@ -16,6 +16,14 @@ declare namespace API {
             page?: number | string | null
             [key: string]: number | string | null
          }
+
+         type School = {
+            type?: number | null
+            supervisor?: number | null
+            page?: number | string | null
+            per_page?: number | string | null
+            [key: string]: number | string | null
+         }
       }
 
       namespace Form {
