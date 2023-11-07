@@ -35,6 +35,17 @@ declare namespace API {
             file: File | Blob | null
             [key?: string]: string | number | Blob | null
          }
+
+         type School = {
+            school_type_id: number | null
+            supervisor_id: number | null
+            principal: string | null
+            address: string | null
+            name: string | null
+            email: string | null
+            password: string | null
+            [key?: string] : string | number | null
+         }
       }
    }
 }

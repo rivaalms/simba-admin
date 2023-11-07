@@ -37,10 +37,16 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'data-edit': () => import('@/components/dialog/data-form.vue'),
    'data-delete': () => import('@/components/dialog/delete.vue'),
    'file-upload': () => import('@/components/dialog/file-upload.vue'),
+
+   'school-create': () => import('@/components/dialog/school-form.vue'),
+   'school-edit': () => import('@/components/dialog/school-form.vue'),
+   'school-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',
    'data-edit': 'sm:max-w-2xl',
+   'school-create': 'sm:max-w-2xl',
+   'school-edit': 'sm:max-w-2xl',
 }
 
 const dialogUI : ComputedRef <{ [key: string]: string }> = computed(() => ({
