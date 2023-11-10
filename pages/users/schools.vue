@@ -9,6 +9,27 @@
    >
       <template #filters>
          <div class="grid grid-cols-12 gap-4">
+            <!-- SECTION: Name -->
+            <u-form-group
+               class="col-span-3"
+               label="Cari"
+            >
+               <template #hint>
+                  <span v-if="showSearchHint" class="text-xs">
+                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
+                  </span>
+               </template>
+               <u-input
+                  v-model="(filters.search as string)"
+                  icon="i-heroicons-magnifying-glass"
+                  placeholder="Cari nama/email/kepala sekolah..."
+                  @keydown.enter="fetchSchools(filters)"
+                  @focus="showSearchHint = true"
+                  @blur="showSearchHint = false"
+               ></u-input>
+            </u-form-group>
+            <!-- !SECTION -->
+
             <!-- SECTION: Type -->
             <u-form-group
                class="col-span-2"
@@ -119,6 +140,7 @@ const rows : Ref <Model.School[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const filters : Ref <API.Request.Query.School> = ref({
+   search: null,
    supervisor: null,
    type: null,
    per_page: 10,
@@ -126,6 +148,7 @@ const filters : Ref <API.Request.Query.School> = ref({
 
 const supervisorOptions : Ref <Util.SelectOption[]> = ref([])
 const typeOptions : Ref <Util.SelectOption[]> = ref([])
+const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Model.Data) => ([
    [
