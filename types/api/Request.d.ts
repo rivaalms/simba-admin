@@ -22,6 +22,14 @@ declare namespace API {
             supervisor?: number | null
             page?: number | string | null
             per_page?: number | string | null
+            search?: string | null
+            [key: string]: number | string | null
+         }
+
+         type Supervisor = {
+            page?: number | string | null
+            per_page?: number | string | null
+            search?: string | null
             [key: string]: number | string | null
          }
       }
@@ -45,6 +53,14 @@ declare namespace API {
             email: string | null
             password: string | null
             [key?: string] : string | number | null
+         }
+
+         type Supervisor = {
+            name: string | null
+            employee_number: string | null
+            email: string | null
+            password: string | null
+            [key?: string]: string | number | null
          }
       }
    }

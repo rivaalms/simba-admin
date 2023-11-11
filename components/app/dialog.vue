@@ -41,12 +41,20 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'school-create': () => import('@/components/dialog/school-form.vue'),
    'school-edit': () => import('@/components/dialog/school-form.vue'),
    'school-delete': () => import('@/components/dialog/delete.vue'),
+
+   'supervisor-create': () => import('@/components/dialog/supervisor-form.vue'),
+   'supervisor-edit': () => import('@/components/dialog/supervisor-form.vue'),
+   'supervisor-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',
    'data-edit': 'sm:max-w-2xl',
+
    'school-create': 'sm:max-w-2xl',
    'school-edit': 'sm:max-w-2xl',
+
+   'supervisor-create': 'sm:max-w-4xl',
+   'supervisor-edit': 'sm:max-w-4xl',
 }
 
 const dialogUI : ComputedRef <{ [key: string]: string }> = computed(() => ({
