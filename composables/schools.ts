@@ -1,5 +1,5 @@
 export async function useGetSchools (payload: API.Request.Query.School) : Promise <Util.LaravelPagination<Model.School[]>> {
-   const response = await useAPI(`/schools`, {
+   const response = await $api(`/schools`, {
       method: 'GET',
       query: payload
    }) as API.Response <Util.LaravelPagination <Model.School[]>>
@@ -7,14 +7,14 @@ export async function useGetSchools (payload: API.Request.Query.School) : Promis
 }
 
 export async function useGetSchoolOptions() : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/schools', {
+   const response = await $api('/options/schools', {
       method: 'GET'
    }) as API.Response <Util.SelectOption[]>
    return response.data
 }
 
 export async function useCreateSchool (payload: API.Request.Form.School) : Promise <Model.User> {
-   const response = await useAPI('/school', {
+   const response = await $api('/school', {
       method: 'POST',
       body: payload
    }) as API.Response <Model.User>
@@ -22,7 +22,7 @@ export async function useCreateSchool (payload: API.Request.Form.School) : Promi
 }
 
 export async function useUpdateSchool (schoolId: number, payload: API.Request.Form.School) : Promise <string> {
-   const response = await useAPI(`/school/${schoolId}`, {
+   const response = await $api(`/school/${schoolId}`, {
       method: 'PUT',
       body: payload
    }) as API.Response <boolean>
@@ -30,7 +30,7 @@ export async function useUpdateSchool (schoolId: number, payload: API.Request.Fo
 }
 
 export async function useDeleteSchool (schoolId: number) : Promise <string> {
-   const response = await useAPI('/school', {
+   const response = await $api('/school', {
       method: 'DELETE',
       body: {
          id: schoolId
@@ -40,7 +40,7 @@ export async function useDeleteSchool (schoolId: number) : Promise <string> {
 }
 
 export async function useGetSchoolTypeOptions () : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/school-types', {
+   const response = await $api('/options/school-types', {
       method: 'GET'
    }) as API.Response <Util.SelectOption[]>
    return response.data

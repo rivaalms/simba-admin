@@ -1,5 +1,5 @@
 export const useLogin = async (payload: API.Request.Login) => {
-   const response = await useAPI (`/login`, {
+   const response = await $api (`/login`, {
       method: 'POST',
       body: payload
    }) as API.Response<{ user: Model.User, token: string }>
@@ -7,7 +7,7 @@ export const useLogin = async (payload: API.Request.Login) => {
 }
 
 export const useLogout = async () : Promise <void> => {
-   await useAPI (`/logout`, {
+   await $api (`/logout`, {
       method: 'POST'
    }) as API.Response <null>
 }

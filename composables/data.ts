@@ -1,5 +1,5 @@
 export async function useGetData (payload: API.Request.Query.Data) : Promise<Util.LaravelPagination<Model.Data[]>> {
-   const response = await useAPI('/data', {
+   const response = await $api('/data', {
       method: 'GET',
       query: payload
    }) as API.Response <Util.LaravelPagination<Model.Data[]>>
@@ -12,7 +12,7 @@ export async function useCreateData (payload: API.Request.Form.Data) : Promise <
       form.append(i, payload[i] as string | Blob)
    }
 
-   const response = await useAPI('/data', {
+   const response = await $api('/data', {
       method: 'POST',
       body: form
    }) as API.Response <Model.Data>
@@ -20,7 +20,7 @@ export async function useCreateData (payload: API.Request.Form.Data) : Promise <
 }
 
 export async function useUpdateData (dataId: number, payload: API.Request.Form.Data) : Promise <string> {
-   const response = await useAPI(`/data/${dataId}`, {
+   const response = await $api(`/data/${dataId}`, {
       method: 'PUT',
       body: payload
    }) as API.Response <boolean>
@@ -31,7 +31,7 @@ export async function useUpdateDataFile (dataId: number, payload: Pick <API.Requ
    const form = new FormData()
    form.append('file', payload.file as Blob)
 
-   const response = await useAPI(`/data/file/${dataId}`, {
+   const response = await $api(`/data/file/${dataId}`, {
       method: 'POST',
       body: form
    }) as API.Response <boolean>
@@ -39,7 +39,7 @@ export async function useUpdateDataFile (dataId: number, payload: Pick <API.Requ
 }
 
 export async function useDeleteData (dataId: number) : Promise <string> {
-   const response = await useAPI(`/data`, {
+   const response = await $api(`/data`, {
       method: 'DELETE',
       body: {
          id: dataId
@@ -49,7 +49,7 @@ export async function useDeleteData (dataId: number) : Promise <string> {
 }
 
 export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
-   const response = await useAPI('/data/download', {
+   const response = await $api('/data/download', {
       method: 'POST',
       body: {
          id: data.id
@@ -66,14 +66,14 @@ export async function useDownloadFile(data: Model.Data) : Promise <boolean> {
 }
 
 export async function useDataCategoryOptions () : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/data-categories', {
+   const response = await $api('/options/data-categories', {
       method: 'GET'
    }) as API.Response <Util.SelectOption[]>
    return response.data
 }
 
 export async function useDataTypeOptions (categoryId: number) : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/data-types', {
+   const response = await $api('/options/data-types', {
       method: 'GET',
       query: {
          category: categoryId
@@ -83,7 +83,7 @@ export async function useDataTypeOptions (categoryId: number) : Promise <Util.Se
 }
 
 export async function useDataStatusOptions () : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/data-status', {
+   const response = await $api('/options/data-status', {
       method: 'GET',
    }) as API.Response <Util.SelectOption[]>
    return response.data

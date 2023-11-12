@@ -1,6 +1,6 @@
 import type { UseFetchOptions } from "nuxt/app"
 
-export const useAPI = async (url: string, opts?: UseFetchOptions<any>) : Promise <unknown> => {
+export const $api = async (url: string, opts?: UseFetchOptions<any>) : Promise <unknown> => {
    const { data } = await useFetch(url, {
       baseURL: useRuntimeConfig().public.apiBaseUrl,
       ...opts,

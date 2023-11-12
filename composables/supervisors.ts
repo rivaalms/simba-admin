@@ -1,5 +1,5 @@
 export async function useGetSupervisors (payload: API.Request.Query.Supervisor) : Promise <Util.LaravelPagination <Model.Supervisor[]>> {
-   const response = await useAPI('/supervisors', {
+   const response = await $api('/supervisors', {
       method: 'GET',
       query: payload
    }) as API.Response <Util.LaravelPagination <Model.Supervisor[]>>
@@ -7,7 +7,7 @@ export async function useGetSupervisors (payload: API.Request.Query.Supervisor) 
 }
 
 export async function useCreateSupervisor (payload: API.Request.Form.Supervisor) : Promise <Model.Supervisor> {
-   const response = await useAPI('/supervisor', {
+   const response = await $api('/supervisor', {
       method: 'POST',
       body: payload
    }) as API.Response<Model.Supervisor>
@@ -15,7 +15,7 @@ export async function useCreateSupervisor (payload: API.Request.Form.Supervisor)
 }
 
 export async function useUpdateSupervisor (supervisorId: number, payload: API.Request.Form.Supervisor) : Promise <string> {
-   const response = await useAPI(`/supervisor/${supervisorId}`, {
+   const response = await $api(`/supervisor/${supervisorId}`, {
       method: 'PUT',
       body: payload
    }) as API.Response <boolean>
@@ -23,7 +23,7 @@ export async function useUpdateSupervisor (supervisorId: number, payload: API.Re
 }
 
 export async function useDeleteSupervisor (supervisorId: number) : Promise <string> {
-   const response = await useAPI('/supervisor', {
+   const response = await $api('/supervisor', {
       method: 'DELETE',
       body: {
          id: supervisorId
@@ -33,7 +33,7 @@ export async function useDeleteSupervisor (supervisorId: number) : Promise <stri
 }
 
 export async function useGetSupervisorOptions () : Promise <Util.SelectOption[]> {
-   const response = await useAPI('/options/supervisors', {
+   const response = await $api('/options/supervisors', {
       method: 'GET'
    }) as API.Response <Util.SelectOption[]>
    return response.data
