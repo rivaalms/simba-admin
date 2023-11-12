@@ -45,6 +45,10 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'supervisor-create': () => import('@/components/dialog/supervisor-form.vue'),
    'supervisor-edit': () => import('@/components/dialog/supervisor-form.vue'),
    'supervisor-delete': () => import('@/components/dialog/delete.vue'),
+
+   'officer-create': () => import('@/components/dialog/officer-form.vue'),
+   'officer-edit': () => import('@/components/dialog/officer-form.vue'),
+   'officer-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',
@@ -55,6 +59,9 @@ const widthMap : { [key: string]: string } = {
 
    'supervisor-create': 'sm:max-w-4xl',
    'supervisor-edit': 'sm:max-w-4xl',
+
+   'officer-create': 'sm:max-w-4xl',
+   'officer-edit': 'sm:max-w-4xl',
 }
 
 const dialogUI : ComputedRef <{ [key: string]: string }> = computed(() => ({

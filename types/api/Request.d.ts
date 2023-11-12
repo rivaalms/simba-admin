@@ -32,6 +32,8 @@ declare namespace API {
             search?: string | null
             [key: string]: number | string | null
          }
+
+         type Officer = API.Request.Query.Supervisor
       }
 
       namespace Form {
@@ -62,6 +64,8 @@ declare namespace API {
             password: string | null
             [key?: string]: string | number | null
          }
+
+         type Officer = API.Request.Form.Supervisor
       }
    }
 }
