@@ -75,7 +75,7 @@ const rows : Ref <Model.Officer[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const showSearchHint : Ref <boolean> = ref(false)
-const filters : Ref <API.Request.Query.Officer> = ref({
+const filters = shallowRef <API.Request.Query.Officer> ({
    search: null,
    page: 1,
    per_page: 10

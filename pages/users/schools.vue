@@ -23,7 +23,7 @@
                   v-model="(filters.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari nama/email/kepala sekolah..."
-                  @keydown.enter="fetchSchools(filters)"
+                  @keyup.enter="fetchSchools(filters)"
                   @focus="showSearchHint = true"
                   @blur="showSearchHint = false"
                ></u-input>
@@ -139,7 +139,7 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
 const rows : Ref <Model.School[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filters : Ref <API.Request.Query.School> = ref({
+const filters = shallowRef <API.Request.Query.School> ({
    search: null,
    supervisor: null,
    type: null,

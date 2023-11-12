@@ -75,7 +75,7 @@ const rows : Ref <Model.Supervisor[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const showSearchHint : Ref <boolean> = ref(false)
-const filters : Ref <API.Request.Query.Supervisor> = ref({
+const filters = shallowRef <API.Request.Query.Supervisor> ({
    search: null,
    page: 1,
    per_page: 10
