@@ -11,38 +11,23 @@ declare namespace Model {
          id: number
          school_id: number
          grade: number
-         islam: number
-         catholic: number
-         protestant: number
-         hindu: number
-         buddha: number
-         konghucu: number
+         religion_id: number
+         year: string
+         count: number
          created_at?: string | null
          updated_at?: string | null
+         religion?: Util.Religion
       }
 
       type Teacher = {
          id: number
          school_id: number
          year: string
-         math: number
-         science: number
-         ind_lit: number
-         eng_lit: number
-         social: number
-         civic: number
-         islam: number
-         catholic: number
-         protestant: number
-         hindu: number
-         buddha: number
-         konghucu: number
-         counseling: number
-         art: number
-         sport: number
-         entrepreneurship: number
+         subject_id: number
+         count: number
          created_at?: string | null
          updated_at?: string | null
+         subject?: Util.Subject
       }
    }
 }

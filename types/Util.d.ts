@@ -36,4 +36,36 @@ declare namespace Util {
       label: string
       value: string | number | null
    }
+
+   type Religion = {
+      id: number
+      name: string
+      created_at?: string | null
+      updated_at?: string | null
+   }
+
+   type Subject = {
+      id: number
+      name: string
+      abbreviation: string
+      created_at?: string | null
+      updated_at?: string | null
+   }
+
+   type MapStudent = {
+      grade: number
+      islam: number
+      katolik: number
+      kristen: number
+      hindu: number
+      buddha: number
+      konghucu: number
+      total: number
+      year: string
+   }
+
+   type MapTeacher = {
+      subject: string
+      value: string | number
+   }
 }

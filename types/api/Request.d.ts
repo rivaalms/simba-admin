@@ -34,6 +34,14 @@ declare namespace API {
          }
 
          type Officer = API.Request.Query.Supervisor
+
+         type SchoolStudent = {
+            school_id: string | number | null
+            year: string | null
+            [key: string]: number | string | null
+         }
+
+         type SchoolTeacher = SchoolStudent
       }
 
       namespace Form {

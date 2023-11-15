@@ -155,7 +155,7 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Lihat detail',
          icon: 'i-heroicons-document-magnifying-glass',
-         click: () => { console.log(row) }
+         click: () => useRouter().push(`/users/schools/${row.id}`)
       },
       {
          label: 'Sunting sekolah',

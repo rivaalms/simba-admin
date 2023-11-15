@@ -24,7 +24,7 @@
       </template>
    </u-table>
 
-   <div class="flex justify-between items-center text-sm">
+   <div v-if="pagination" class="flex justify-between items-center text-sm">
       <div class="flex items-center gap-3">
          Tampilkan
          <u-select-menu
@@ -51,12 +51,17 @@
 <script setup lang="ts">
 const dayjs = useDayjs()
 
-const props = defineProps<{
+type Props = {
    columns: Util.TableColumns[],
    rows: any
    total: number
    loading: boolean
-}>()
+   pagination?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+   pagination: true
+})
 
 const emit = defineEmits(['fetch'])
 
