@@ -6,6 +6,13 @@ export async function useGetSupervisors (payload: API.Request.Query.Supervisor) 
    return response.data
 }
 
+export async function useGetSupervisorDetails (supervisorId: number) : Promise <Model.Supervisor> {
+   const response = await $api(`/supervisor/${supervisorId}`, {
+      method: 'GET'
+   }) as API.Response <Model.Supervisor>
+   return response.data
+}
+
 export async function useCreateSupervisor (payload: API.Request.Form.Supervisor) : Promise <Model.Supervisor> {
    const response = await $api('/supervisor', {
       method: 'POST',

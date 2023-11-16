@@ -32,6 +32,7 @@ declare namespace Model {
       created_at?: string | null
       updated_at?: string | null
       user?: Model.User
+      schools?: Omit <Model.School, 'supervisor'>[]
    }
 
    type Officer = Model.Supervisor

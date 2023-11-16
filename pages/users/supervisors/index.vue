@@ -86,7 +86,7 @@ const actionMenu = (row: Model.Supervisor) => ([
       {
          label: 'Lihat detail',
          icon: 'i-heroicons-document-magnifying-glass',
-         click: () => { console.log(row) }
+         click: () => useRouter().push(`/users/supervisors/${row.id}`)
       },
       {
          label: 'Sunting',
