@@ -148,8 +148,8 @@ const submit = async () => {
       const createMode = store.dialog.id.includes('create')
       const editMode = store.dialog.id.includes('edit')
 
-      if (createMode) await useCreateOfficer(state.value)
-      else if (editMode) await useUpdateOfficer(store.dialog.data.id, state.value)
+      if (createMode) await createOfficer(state.value)
+      else if (editMode) await updateOfficer(store.dialog.data.id, state.value)
       else return
 
       const message = createMode ? 'Diknas baru berhasil disimpan' : 'Diknas berhasil diperbarui'

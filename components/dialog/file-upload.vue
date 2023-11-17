@@ -61,7 +61,7 @@ const onFileChange = (e: any) => {
 
 const submit = async () => {
    loading.value = true
-   await useUpdateDataFile((store.dialog.data.id as number), state.value)
+   await updateFile((store.dialog.data.id as number), state.value)
       .then(resp => {
          store.notify('success', 'File berhasil diperbarui', 'file-upload')
          if (store.dialog.callback) store.dialog.callback()

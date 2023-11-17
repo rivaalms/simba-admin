@@ -241,7 +241,7 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Unduh data',
          icon: 'i-heroicons-folder-arrow-down',
-         click: () => useDownloadFile(row)
+         click: () => downloadFile(row)
             .then(resp => store.notify('success', 'File berhasil diunduh'))
             .catch((error: API.Error) => store.notify('error', error.response._data.message || 'Error downloading data'))
       },
@@ -277,7 +277,7 @@ onBeforeMount(async () => {
       per_page: 10
    })
 
-   await useGetSchoolOptions()
+   await getSchoolOptions()
       .then(resp => {
          schoolOptions.value = resp
          schoolOptions.value.unshift({
@@ -286,7 +286,7 @@ onBeforeMount(async () => {
          })
       })
 
-   await useDataCategoryOptions()
+   await getDataCategoryOptions()
       .then(resp => {
          categoryOptions.value = resp
          categoryOptions.value.unshift({
@@ -295,7 +295,7 @@ onBeforeMount(async () => {
          })
       })
 
-   await useDataStatusOptions()
+   await getDataStatusOptions()
       .then(resp => {
          statusOptions.value = resp
          statusOptions.value.unshift({
@@ -307,7 +307,7 @@ onBeforeMount(async () => {
 
 const fetchData = async (payload: API.Request.Query.Data) => {
    loading.value = true
-   await useGetData(payload)
+   await getData(payload)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
@@ -321,7 +321,7 @@ const fetchData = async (payload: API.Request.Query.Data) => {
 }
 
 const fetchTypeOptions = async (categoryId: number) => {
-   await useDataTypeOptions(categoryId)
+   await getDataTypeOptions(categoryId)
       .then(resp => {
          typeOptions.value = resp
          typeOptions.value.unshift({

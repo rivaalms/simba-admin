@@ -110,7 +110,7 @@ onBeforeMount(async () => {
 
 const fetchOfficers = async (payload: API.Request.Query.Officer) => {
    loading.value = true
-   await useGetOfficers(payload)
+   await getOfficers(payload)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total

@@ -36,6 +36,15 @@ export default defineNuxtConfig({
       }
    },
 
+   imports: {
+      dirs: [
+         'composables',
+         'composables/**',
+         'utils',
+         'utils/**'
+      ]
+   },
+
    css: [
       '~/assets/css/base.css'
    ],

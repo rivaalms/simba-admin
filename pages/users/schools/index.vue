@@ -179,7 +179,7 @@ onBeforeMount(async () => {
       per_page: 10
    })
 
-   await useGetSupervisorOptions()
+   await getSupervisorOptions()
       .then(resp => {
          supervisorOptions.value = resp
          supervisorOptions.value.unshift({
@@ -188,7 +188,7 @@ onBeforeMount(async () => {
          })
       })
 
-   await useGetSchoolTypeOptions()
+   await getSchoolTypeOptions()
       .then(resp => {
          typeOptions.value = resp
          typeOptions.value.unshift({
@@ -200,7 +200,7 @@ onBeforeMount(async () => {
 
 const fetchSchools = async (payload: API.Request.Query.School) => {
    loading.value = true
-   await useGetSchools(payload)
+   await getSchools(payload)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total

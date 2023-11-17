@@ -110,7 +110,7 @@ onBeforeMount(async () => {
 
 const fetchSupervisors = async (payload: API.Request.Query.Supervisor) => {
    loading.value = true
-   await useGetSupervisors(payload)
+   await getSupervisors(payload)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total

@@ -1,28 +1,20 @@
 import type { NotificationColor } from "@nuxt/ui/dist/runtime/types"
 
-namespace State {
-   export type Callback = (() => void) | (() => Promise <void>)
-   export type App = {
-      pageTitle: string,
-      dialog: {
-         id: string
-         show: boolean
-         title: string
-         data?: any
-         callback?: Callback
-      }
-   }
-
-   export type Auth = {
-      user: Model.User | null
-      token: string | null
+type State = {
+   pageTitle: string
+   dialog: {
+      id: string
+      show: boolean
+      title: string
+      data?: any
+      callback?: (() => any)
    }
 }
 
 export const useAppStore = defineStore('app', {
    persist: true,
 
-   state: () : State.App => ({
+   state: () : State => ({
       pageTitle: '',
       dialog: {
          id: '',
@@ -38,7 +30,7 @@ export const useAppStore = defineStore('app', {
    },
 
    actions: {
-      showDialog(id: string, title: string, data?: any, callback?: State.Callback) {
+      showDialog(id: string, title: string, data?: any, callback?: (() => any)) {
          this.dialog = {
             id,
             title,
@@ -79,41 +71,6 @@ export const useAppStore = defineStore('app', {
                icon,
             });
          }
-      }
-   }
-})
-
-export const useAuthStore = defineStore('auth', {
-   persist: true,
-
-   state: () : State.Auth => ({
-      user: null,
-      token: null
-   }),
-
-   getters: {
-      getUser: (state) => state.user,
-      getToken: (state) : string | null => state.token,
-      isLoggedIn: (state) : boolean => state.token ? true : false
-   },
-
-   actions: {
-      async login(payload: API.Request.Login) {
-         await useLogin(payload)
-            .then(resp => {
-               this.user = resp.user
-               this.token = resp.token
-               localStorage.setItem('user', JSON.stringify(resp.user))
-               localStorage.setItem('token', JSON.stringify(resp.token))
-            })
-      },
-
-      async logout() {
-         await useLogout()
-            .then(() => {
-               localStorage.removeItem('user')
-               localStorage.removeItem('token')
-            })
       }
    }
 })

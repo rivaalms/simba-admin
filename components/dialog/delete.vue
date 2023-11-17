@@ -33,16 +33,16 @@ const submit = async () => {
    try {
       switch (type.value) {
          case 'data':
-            await useDeleteData(store.dialog.data.id)
+            await deleteData(store.dialog.data.id)
             break
          case 'school':
-            await useDeleteSchool(store.dialog.data.id)
+            await deleteSchool(store.dialog.data.id)
             break
          case 'supervisor':
-            await useDeleteSupervisor(store.dialog.data.id)
+            await deleteSupervisor(store.dialog.data.id)
             break
          case 'officer':
-            await useDeleteOfficer(store.dialog.data.id)
+            await deleteOfficer(store.dialog.data.id)
             break
          default:
             throw new Error('Undefined delete type')

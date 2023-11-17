@@ -79,7 +79,7 @@ onBeforeMount(async () => {
 
 const fetchSupervisor = async () => {
    const id: unknown = useRoute().params.id
-   await useGetSupervisorDetails(id as number)
+   await getSupervisorDetails(id as number)
       .then(resp => {
          supervisor.value = resp
       })

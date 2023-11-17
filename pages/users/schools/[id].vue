@@ -137,8 +137,8 @@ const dayjs = useDayjs()
 const loading : Ref <boolean> = ref(false)
 const school : Ref <Model.School | null> = ref(null)
 
-const religions = await useGetReligions()
-const subjects = await useGetSubjects()
+const religions = await getReligions()
+const subjects = await getSubjects()
 
 const studentColumns : ComputedRef <Util.TableColumns[]> = computed(() => {
    const religionColumns = religions.map(item => ({
@@ -191,7 +191,7 @@ onBeforeMount(async () => {
 const fetchSchool = async () => {
    const schoolId : unknown = useRoute().params.id
    loading.value = true
-   await useGetSchoolDetails(schoolId as number)
+   await getSchoolDetails(schoolId as number)
       .then(resp => {
          school.value = resp
       })
@@ -200,7 +200,7 @@ const fetchSchool = async () => {
 }
 
 const fetchStudents = async () => {
-   await useGetSchoolStudents(studentFilter.value)
+   await getSchoolStudents(studentFilter.value)
       .then(async (resp) => {
          students.value = await mapStudents(resp, religions)
       })
@@ -208,7 +208,7 @@ const fetchStudents = async () => {
 }
 
 const fetchTeachers = async () => {
-   await useGetSchoolTeachers(teacherFilter.value)
+   await getSchoolTeachers(teacherFilter.value)
       .then(async (resp) => {
          teachers.value = await mapTeachers(resp, subjects)
       })

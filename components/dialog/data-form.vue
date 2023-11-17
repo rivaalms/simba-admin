@@ -208,24 +208,24 @@ const typeOptions : Ref <Util.SelectOption[]> = ref([])
 const statusOptions : Ref <Util.SelectOption[]> = ref([])
 
 onBeforeMount(() => {
-   useGetSchoolOptions()
+   getSchoolOptions()
       .then(resp => {
          schoolOptions.value = resp
       })
 
-   useDataCategoryOptions()
+   getDataCategoryOptions()
       .then((resp) => {
          categoryOptions.value = resp
       })
 
    if (category.value) {
-      useDataTypeOptions(category.value)
+      getDataTypeOptions(category.value)
          .then(resp => {
             typeOptions.value = resp
          })
    }
 
-   useDataStatusOptions()
+   getDataStatusOptions()
       .then(resp => {
          statusOptions.value = resp
       })
@@ -234,7 +234,7 @@ onBeforeMount(() => {
 const onCategoryChanged = async () => {
    if (!category.value) return
    state.value.data_type_id = null
-   await useDataTypeOptions(category.value)
+   await getDataTypeOptions(category.value)
       .then(resp =>  {
          typeOptions.value = resp
       })
@@ -247,8 +247,8 @@ const onFileChange = (e: any) => {
 const submit = async () => {
    loading.value = true
    try {
-      if (store.dialog.id.includes('create')) await useCreateData(state.value)
-      else if (store.dialog.id.includes('edit')) await useUpdateData((store.dialog.data.id as number), state.value)
+      if (store.dialog.id.includes('create')) await createData(state.value)
+      else if (store.dialog.id.includes('edit')) await updateData((store.dialog.data.id as number), state.value)
       else return
 
       const message = store.dialog.id.includes('create') ? 'Data baru berhasil disimpan' : 'Data berhasil diperbarui'

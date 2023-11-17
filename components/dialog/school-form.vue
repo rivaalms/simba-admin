@@ -214,18 +214,18 @@ const typeOptions : Ref <Util.SelectOption[]> = ref([])
 const supervisorOptions : Ref <Util.SelectOption[]> = ref([])
 
 onBeforeMount(() => {
-   useGetSchoolTypeOptions()
+   getSchoolTypeOptions()
       .then(resp => typeOptions.value = resp)
 
-   useGetSupervisorOptions()
+   getSupervisorOptions()
       .then(resp => supervisorOptions.value = resp)
 })
 
 const submit = async () => {
    loading.value = true
    try {
-      if (store.dialog.id.includes('create')) await useCreateSchool(state.value)
-      else if (store.dialog.id.includes('edit')) await useUpdateSchool((store.dialog.data!.id as number), state.value)
+      if (store.dialog.id.includes('create')) await createSchool(state.value)
+      else if (store.dialog.id.includes('edit')) await updateSchool((store.dialog.data!.id as number), state.value)
       else return
 
       const message = store.dialog.id.includes('create') ? 'Sekolah baru berhasil disimpan' : 'Sekolah berhasil diperbarui'

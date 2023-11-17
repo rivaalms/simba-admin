@@ -148,8 +148,8 @@ const submit = async () => {
       const createMode = store.dialog.id.includes('create')
       const editMode = store.dialog.id.includes('edit')
 
-      if (createMode) await useCreateSupervisor(state.value)
-      else if (editMode) await useUpdateSupervisor(store.dialog.data.id, state.value)
+      if (createMode) await createSupervisor(state.value)
+      else if (editMode) await updateSupervisor(store.dialog.data.id, state.value)
       else return
 
       const message = createMode ? 'Pengawas baru berhasil disimpan' : 'Pengawas berhasil diperbarui'
