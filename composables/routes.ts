@@ -10,15 +10,15 @@ export const useRoutes : Util.Router[] = [
       icon: 'i-heroicons-circle-stack'
    },
    {
-      label: 'Users',
+      label: 'Pengguna',
       icon: 'i-heroicons-users',
       children: [
          {
-            label: 'Schools',
+            label: 'Sekolah',
             to: '/users/schools'
          },
          {
-            label: 'Supervisors',
+            label: 'Pengawas',
             to: '/users/supervisors'
          },
          {
@@ -28,24 +28,32 @@ export const useRoutes : Util.Router[] = [
       ]
    },
    {
-      label: 'Settings',
+      label: 'Data Master',
       icon: 'i-heroicons-cog-8-tooth',
       children: [
          {
-            label: 'Data Statuses',
-            to: '/settings/data-statuses'
+            label: 'Status Data',
+            to: '/masters/data-statuses'
          },
          {
-            label: 'Data Categories',
-            to: '/settings/data-categories'
+            label: 'Kategori Data',
+            to: '/masters/data-categories'
          },
          {
-            label: 'Data Types',
-            to: '/settings/data-types'
+            label: 'Tipe Data',
+            to: '/masters/data-types'
          },
          {
-            label: 'School Types',
-            to: '/settings/school-types'
+            label: 'Tipe Sekolah',
+            to: '/masters/school-types'
+         },
+         {
+            label: 'Mata Pelajaran',
+            to: '/masters/subjects'
+         },
+         {
+            label: 'Agama',
+            to: '/masters/religions'
          }
       ]
    }
