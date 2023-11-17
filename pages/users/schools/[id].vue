@@ -1,6 +1,16 @@
 <template>
 <div v-if="school" class="grid grid-cols-3 gap-2">
    <u-card class="place-self-start overflow-visible">
+      <template #header>
+         <u-button
+            variant="ghost"
+            color="gray"
+            icon="i-heroicons-arrow-left-on-rectangle-20-solid"
+            @click.stop="useRouter().push('/users/schools')"
+         >
+            Kembali
+         </u-button>
+      </template>
       <div class="flex justify-center mb-4">
          <img src="https://avatars.githubusercontent.com/u/739984?v=4" class="w-2/3 rounded-full object-cover">
       </div>
@@ -23,7 +33,7 @@
 
          <div class="text-sm">
             <p class="text-gray-500">Pengawas</p>
-            <p class="tracking-wide">{{ school.supervisor?.user?.name }}</p>
+            <nuxt-link :to="`/users/supervisors/${school.supervisor_id}`" class="tracking-wide hover:text-primary transition-colors">{{ school.supervisor?.user?.name }} <u-icon name="i-heroicons-arrow-top-right-on-square-20-solid"></u-icon></nuxt-link>
          </div>
       </div>
    </u-card>
