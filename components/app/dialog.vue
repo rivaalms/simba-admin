@@ -46,6 +46,10 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'supervisor-edit': () => import('@/components/dialog/supervisor-form.vue'),
    'supervisor-delete': () => import('@/components/dialog/delete.vue'),
 
+   'data-status-create': () => import('@/components/dialog/data-status-form.vue'),
+   'data-status-edit': () => import('@/components/dialog/data-status-form.vue'),
+   'data-status-delete': () => import ('@/components/dialog/delete.vue'),
+
    'officer-create': () => import('@/components/dialog/officer-form.vue'),
    'officer-edit': () => import('@/components/dialog/officer-form.vue'),
    'officer-delete': () => import('@/components/dialog/delete.vue'),
