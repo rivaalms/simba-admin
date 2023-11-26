@@ -46,6 +46,12 @@ declare namespace API {
          type SchoolType = {
             search?: string | null
          }
+
+         type Subject = Wildcard & {
+            search?: string | null
+            page?: number | null
+            per_page?: number | null
+         }
       }
 
       namespace Form {
@@ -91,6 +97,11 @@ declare namespace API {
 
          type SchoolType = Wildcard & {
             name: string | null
+         }
+
+         type Subject = Wildcard & {
+            name: string | null
+            abbreviation: string | null
          }
       }
    }

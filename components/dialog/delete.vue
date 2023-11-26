@@ -56,6 +56,9 @@ const submit = async () => {
          case 'school-type':
             await deleteSchoolType(store.dialog.data.id)
             break
+         case 'subject':
+            await deleteSubject(store.dialog.data.id)
+            break
          default:
             throw new Error('Undefined delete type')
       }
