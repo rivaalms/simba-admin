@@ -57,6 +57,10 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'data-category-create': () => import('@/components/dialog/data-category-form.vue'),
    'data-category-edit': () => import('@/components/dialog/data-category-form.vue'),
    'data-category-delete': () => import ('@/components/dialog/delete.vue'),
+
+   'data-type-create': () => import('@/components/dialog/data-type-form.vue'),
+   'data-type-edit': () => import('@/components/dialog/data-type-form.vue'),
+   'data-type-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',

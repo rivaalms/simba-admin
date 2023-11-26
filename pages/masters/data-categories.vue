@@ -72,7 +72,7 @@ const loading : Ref <boolean> = ref(false)
 const search : Ref <string | null> = ref(null)
 const showSearchHint : Ref <boolean> = ref(false)
 
-   const actionMenu = (row: Model.Data.Category) => ([
+const actionMenu = (row: Model.Data.Category) => ([
    [
       {
          label: 'Sunting',
