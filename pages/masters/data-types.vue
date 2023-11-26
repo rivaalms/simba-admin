@@ -99,7 +99,7 @@ const columns = [
 
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter : Ref <Filter> = shallowRef({
+const filter : Ref <API.Request.Query.DataType> = shallowRef({
    search: null,
    category: null,
    per_page: 10,
@@ -155,13 +155,5 @@ const onTableEmit = async (emitData: { [key: string]: number | string }) => {
       filter.value[key] = value
    }
    await fetchTypes()
-}
-
-type Filter = {
-   search: string | null
-   category: number | null
-   per_page: number
-   page: number
-   [key: string]: number | string | null
 }
 </script>

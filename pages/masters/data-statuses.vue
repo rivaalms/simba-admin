@@ -19,7 +19,7 @@
                   </span>
                </template>
                <u-input
-                  v-model="(search as string)"
+                  v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari status data..."
                   @keyup.enter="fetchStatus"
@@ -69,7 +69,9 @@ const columns = [
    { key: 'actions', label: '' }
 ]
 const loading : Ref <boolean> = ref(false)
-const search : Ref <string | null> = ref(null)
+const filter : Ref <API.Request.Query.DataStatus> = shallowRef({
+   search: null
+})
 const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Model.Data.Status) => ([
@@ -96,7 +98,7 @@ onBeforeMount(async () => {
 
 const fetchStatus = async () => {
    loading.value = true
-   await getDataStatus(search.value)
+   await getDataStatus(filter.value)
       .then(resp => {
          rows.value = resp
       })

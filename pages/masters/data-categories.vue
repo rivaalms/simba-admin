@@ -19,7 +19,7 @@
                   </span>
                </template>
                <u-input
-                  v-model="(search as string)"
+                  v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari kategori data..."
                   @keyup.enter="fetchCategories"
@@ -69,7 +69,9 @@ const columns = [
    { key: 'actions', label: '' }
 ]
 const loading : Ref <boolean> = ref(false)
-const search : Ref <string | null> = ref(null)
+const filter : Ref <API.Request.Query.DataCategory> = shallowRef({
+   search: null
+})
 const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Model.Data.Category) => ([
@@ -96,7 +98,7 @@ onBeforeMount(async () => {
 
 const fetchCategories = async () => {
    loading.value = true
-   await getDataCategories(search.value)
+   await getDataCategories(filter.value)
       .then(resp => rows.value = resp)
       .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)

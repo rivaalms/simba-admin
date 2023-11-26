@@ -1,9 +1,7 @@
-export async function getDataStatus (search?: string | null) : Promise <Model.Data.Status[]> {
+export async function getDataStatus (payload: API.Request.Query.DataStatus) : Promise <Model.Data.Status[]> {
    const response = await $api ('/data-statuses', {
       method: 'GET',
-      query: {
-         search
-      }
+      query: payload
    }) as API.Response <Model.Data.Status[]>
    return response.data
 }

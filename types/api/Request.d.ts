@@ -43,6 +43,25 @@ declare namespace API {
 
          type SchoolTeacher = SchoolStudent
 
+         type DataStatus = Wildcard & {
+            search?: string | null
+            page?: number | null
+            per_page?: number | null
+         }
+
+         type DataCategory = Wildcard & {
+            search?: string | null
+            page?: number | null
+            per_page?: number | null
+         }
+
+         type DataType = Wildcard & {
+            search?: string | null
+            category?: number | null
+            per_page?: number
+            page?: number
+         }
+
          type SchoolType = Wildcard & {
             search?: string | null
          }
