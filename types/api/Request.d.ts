@@ -52,6 +52,8 @@ declare namespace API {
             page?: number | null
             per_page?: number | null
          }
+
+         type Religion = API.Request.Query.Subject
       }
 
       namespace Form {
@@ -102,6 +104,10 @@ declare namespace API {
          type Subject = {
             name: string | null
             abbreviation: string | null
+         }
+
+         type Religion = {
+            name: string | null
          }
       }
    }

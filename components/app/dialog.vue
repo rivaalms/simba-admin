@@ -69,6 +69,10 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'subject-create': () => import('@/components/dialog/subject-form.vue'),
    'subject-edit': () => import('@/components/dialog/subject-form.vue'),
    'subject-delete': () => import('@/components/dialog/delete.vue'),
+
+   'religion-create': () => import('@/components/dialog/religion-form.vue'),
+   'religion-edit': () => import('@/components/dialog/religion-form.vue'),
+   'religion-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',

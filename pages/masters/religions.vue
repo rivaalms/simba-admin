@@ -23,7 +23,7 @@
                   v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari kategori data..."
-                  @keyup.enter="fetchSubjects"
+                  @keyup.enter="fetchReligions"
                   @focus="showSearchHint = true"
                   @blur="showSearchHint = false"
                ></u-input>
@@ -32,7 +32,7 @@
             <div class="col-span-1 flex items-end justify-end col-end-13">
                <u-button
                   icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('subject-create', 'Tambah Mata Pelajaran', null, () => fetchSubjects())"
+                  @click.stop="store.showDialog('religion-create', 'Tambah Agama', null, () => fetchReligions())"
                >
                   Tambah
                </u-button>
@@ -63,18 +63,17 @@
 <script setup lang="ts">
 const store = useAppStore()
 
-const rows : Ref <Util.Subject[]> = ref([])
+const rows : Ref <Util.Religion[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
-   { key: 'abbreviation', label: 'Singkatan' },
    { key: 'updated_at', label: 'Diperbarui' },
    { key: 'actions', label: '' },
 ]
 
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter : Ref <API.Request.Query.Subject> = shallowRef({
+const filter : Ref <API.Request.Query.Religion> = shallowRef({
    search: null,
    page: 1,
    per_page: 10
@@ -82,12 +81,12 @@ const filter : Ref <API.Request.Query.Subject> = shallowRef({
 
 const showSearchHint : Ref <boolean> = ref(false)
 
-const actionMenu = (row: Util.Subject) => ([
+const actionMenu = (row: Util.Religion) => ([
    [
       {
          label: 'Sunting',
          icon: 'i-heroicons-pencil-square',
-         click: () => store.showDialog('subject-edit', 'Sunting Mata Pelajaran', row, () => fetchSubjects())
+         click: () => store.showDialog('religion-edit', 'Sunting Agama', row, () => fetchReligions())
       },
    ],
    [
@@ -95,21 +94,21 @@ const actionMenu = (row: Util.Subject) => ([
          label: 'Hapus',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => store.showDialog('subject-delete', 'Hapus Mata Pelajaran', row, () => fetchSubjects())
+         click: () => store.showDialog('religion-delete', 'Hapus Agama', row, () => fetchReligions())
       }
    ]
 ])
 
 onBeforeMount(async () => {
-   await fetchSubjects()
+   await fetchReligions()
 })
 
-const fetchSubjects = async () => {
+const fetchReligions = async () => {
    loading.value = true
-   await getSubjects(filter.value)
+   await getReligions(filter.value)
       .then(resp => {
-         rows.value = (resp as Util.LaravelPagination <Util.Subject[]>).data || resp as Util.Subject[]
-         dataLength.value = (resp as Util.LaravelPagination <Util.Subject[]>).data ? (resp as Util.LaravelPagination <Util.Subject[]>).total : 0
+         rows.value = (resp as Util.LaravelPagination <Util.Religion[]>).data || resp as Util.Religion[]
+         dataLength.value = (resp as Util.LaravelPagination <Util.Religion[]>).data ? (resp as Util.LaravelPagination <Util.Religion[]>).total : 0
       })
       .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
@@ -119,6 +118,6 @@ const onTableEmit = async (emitData: { [key: string]: number | string }) => {
    for (const [key, value] of Object.entries(emitData)) {
       filter.value[key] = value
    }
-   await fetchSubjects()
+   await fetchReligions()
 }
 </script>
