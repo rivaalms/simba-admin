@@ -75,6 +75,11 @@ declare namespace API {
 
          type Officer = API.Request.Form.Supervisor
 
+         type DataCategory = {
+            name: string | null
+            [key?: string]: string | number | null
+         }
+
          type DataType = {
             name: string | null
             data_category_id: number | null

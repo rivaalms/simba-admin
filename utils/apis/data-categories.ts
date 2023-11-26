@@ -8,7 +8,7 @@ export async function getDataCategories (search?: string | null) : Promise <Mode
    return response.data
 }
 
-export async function createDataCategory (payload: Pick <Model.Data.Category, 'name'>) : Promise <Model.Data.Category> {
+export async function createDataCategory (payload: API.Request.Form.DataCategory) : Promise <Model.Data.Category> {
    const response = await $api ('/data-category', {
       method: 'POST',
       body: payload
@@ -16,7 +16,7 @@ export async function createDataCategory (payload: Pick <Model.Data.Category, 'n
    return response.data
 }
 
-export async function updateDataCategory (id: number, payload: Pick <Model.Data.Category, 'name'>) : Promise <string> {
+export async function updateDataCategory (id: number, payload: API.Request.Form.DataCategory) : Promise <string> {
    const response = await $api (`/data-category/${id}`, {
       method: 'PUT',
       body: payload
