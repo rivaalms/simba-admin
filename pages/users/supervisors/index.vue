@@ -119,11 +119,8 @@ const fetchSupervisors = async (payload: API.Request.Query.Supervisor) => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (emitData: { [key: string]: number | string }) => {
-   for (const [key, value] of Object.entries(emitData)) {
-      filters.value[key] = value
-   }
-
+const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
+   filters.value = resp
    await fetchSupervisors(filters.value)
-}
+})
 </script>

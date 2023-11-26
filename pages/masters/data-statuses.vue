@@ -3,9 +3,10 @@
    <data-table
       :columns="columns"
       :rows="rows"
-      :pagination="false"
-      :total="rows.length"
+      :pagination="dataLength > 0"
+      :total="dataLength"
       :loading="loading"
+      @fetch="onTableEmit"
    >
       <template #filters>
          <div class="grid grid-cols-12 gap-4">
@@ -68,6 +69,8 @@ const columns = [
    { key: 'updated_at', label: 'Diperbarui' },
    { key: 'actions', label: '' }
 ]
+
+const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.DataStatus> = shallowRef({
    search: null
@@ -100,9 +103,15 @@ const fetchStatus = async () => {
    loading.value = true
    await getDataStatus(filter.value)
       .then(resp => {
-         rows.value = resp
+         rows.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).data || resp as Model.Data.Status[]
+         dataLength.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).total || 0
       })
       .catch((error: API.Error) => store.notify('error', error.response?._data?.message! || `${error}`))
       .finally(() => loading.value = false)
 }
+
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchStatus()
+})
 </script>

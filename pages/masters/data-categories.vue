@@ -3,9 +3,10 @@
    <data-table
       :columns="columns"
       :rows="rows"
-      :pagination="false"
+      :pagination="dataLength > 0"
       :loading="loading"
-      :total="rows.length"
+      :total="dataLength"
+      @fetch="onTableEmit"
    >
       <template #filters>
          <div class="grid grid-cols-12 gap-4">
@@ -68,6 +69,8 @@ const columns = [
    { key: 'updated_at', label: 'Diperbarui' },
    { key: 'actions', label: '' }
 ]
+
+const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.DataCategory> = shallowRef({
    search: null
@@ -99,8 +102,16 @@ onBeforeMount(async () => {
 const fetchCategories = async () => {
    loading.value = true
    await getDataCategories(filter.value)
-      .then(resp => rows.value = resp)
+      .then(resp => {
+         rows.value = (resp as Util.LaravelPagination <Model.Data.Category[]>).data || resp as Model.Data.Category[]
+         dataLength.value = (resp as Util.LaravelPagination <Model.Data.Category[]>).total || 0
+      })
       .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
+
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchCategories()
+})
 </script>

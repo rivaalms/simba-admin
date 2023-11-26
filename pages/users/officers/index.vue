@@ -119,11 +119,8 @@ const fetchOfficers = async (payload: API.Request.Query.Officer) => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (emitData: { [key: string]: number | string }) => {
-   for (const [key, value] of Object.entries(emitData)) {
-      filters.value[key] = value
-   }
-
+const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
+   filters.value = resp
    await fetchOfficers(filters.value)
-}
+})
 </script>

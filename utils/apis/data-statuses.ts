@@ -1,8 +1,8 @@
-export async function getDataStatus (payload: API.Request.Query.DataStatus) : Promise <Model.Data.Status[]> {
+export async function getDataStatus (payload: API.Request.Query.DataStatus) : Promise <Model.Data.Status[] | Util.LaravelPagination <Model.Data.Status[]>> {
    const response = await $api ('/data-statuses', {
       method: 'GET',
       query: payload
-   }) as API.Response <Model.Data.Status[]>
+   }) as API.Response <Model.Data.Status[] | Util.LaravelPagination <Model.Data.Status[]>>
    return response.data
 }
 

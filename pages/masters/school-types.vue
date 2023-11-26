@@ -3,9 +3,10 @@
    <data-table
       :columns="columns"
       :rows="rows"
-      :pagination="false"
+      :pagination="dataLength > 0"
       :loading="loading"
-      :total="0"
+      :total="dataLength"
+      @fetch="onTableEmit"
    >
       <template #filters>
          <div class="grid grid-cols-12 gap-4">
@@ -69,6 +70,7 @@ const columns = [
    { key: 'actions', label: '' },
 ]
 
+const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.SchoolType> = shallowRef({
    search: null
@@ -102,9 +104,15 @@ const fetchTypes = async () => {
    loading.value = true
    await getSchoolTypes(filter.value)
       .then(resp => {
-         rows.value = resp
+         rows.value = (resp as Util.LaravelPagination <Model.School.Type[]>).data || resp as Model.School.Type[]
+         dataLength.value = (resp as Util.LaravelPagination <Model.School.Type[]>).total || 0
       })
       .catch((e: API.Error) => store.notify('error', e.response?._data?.message || `${e}`))
       .finally(() => loading.value = false)
 }
+
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchTypes()
+})
 </script>

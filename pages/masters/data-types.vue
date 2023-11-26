@@ -4,6 +4,7 @@
       :columns="columns"
       :rows="rows"
       :loading="loading"
+      :pagination="dataLength > 0"
       :total="dataLength"
       @fetch="onTableEmit"
    >
@@ -143,17 +144,15 @@ const fetchTypes = async () => {
    loading.value = true
    await getDataTypes(filter.value)
       .then(resp => {
-         rows.value = resp.data
-         dataLength.value = resp.total
+         rows.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).data || resp as Model.Data.Type[]
+         dataLength.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).total || 0
       })
       .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (emitData: { [key: string]: number | string }) => {
-   for (const [key, value] of Object.entries(emitData)) {
-      filter.value[key] = value
-   }
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
    await fetchTypes()
-}
+})
 </script>

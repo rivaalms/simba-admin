@@ -1,8 +1,8 @@
-export async function getDataCategories (payload: API.Request.Query.DataCategory) : Promise <Model.Data.Category[]> {
+export async function getDataCategories (payload: API.Request.Query.DataCategory) : Promise <Model.Data.Category[] | Util.LaravelPagination <Model.Data.Category[]>> {
    const response = await $api ('/data-categories', {
       method: 'GET',
       query: payload
-   }) as API.Response <Model.Data.Category[]>
+   }) as API.Response <Model.Data.Category[] | Util.LaravelPagination <Model.Data.Category[]>>
    return response.data
 }
 

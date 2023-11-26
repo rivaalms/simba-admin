@@ -115,10 +115,8 @@ const fetchSubjects = async () => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (emitData: { [key: string]: number | string }) => {
-   for (const [key, value] of Object.entries(emitData)) {
-      filter.value[key] = value
-   }
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
    await fetchSubjects()
-}
+})
 </script>

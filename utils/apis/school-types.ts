@@ -1,8 +1,8 @@
-export async function getSchoolTypes (payload: API.Request.Query.SchoolType) : Promise <Model.School.Type[]> {
+export async function getSchoolTypes (payload: API.Request.Query.SchoolType) : Promise <Model.School.Type[] | Util.LaravelPagination <Model.School.Type[]>> {
    const response = await $api ('/school-types', {
       method: 'GET',
       query: payload
-   }) as API.Response <Model.School.Type[]>
+   }) as API.Response <Model.School.Type[] | Util.LaravelPagination <Model.School.Type[]>>
    return response.data
 }
 

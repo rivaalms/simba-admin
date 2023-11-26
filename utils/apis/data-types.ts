@@ -1,8 +1,8 @@
-export async function getDataTypes (payload: API.Request.Query.DataType) : Promise <Util.LaravelPagination<Model.Data.Type[]>> {
+export async function getDataTypes (payload: API.Request.Query.DataType) : Promise <Model.Data.Type[] | Util.LaravelPagination<Model.Data.Type[]>> {
    const response = await $api ('/data-types', {
       method: 'GET',
       query: payload
-   }) as API.Response <Util.LaravelPagination<Model.Data.Type[]>>
+   }) as API.Response <Model.Data.Type[] | Util.LaravelPagination<Model.Data.Type[]>>
    return response.data
 }
 
