@@ -8,7 +8,7 @@ export async function getDataStatus (search?: string | null) : Promise <Model.Da
    return response.data
 }
 
-export async function createDataStatus (payload: Pick <Model.Data.Status, 'name'>) : Promise <Model.Data.Status> {
+export async function createDataStatus (payload: API.Request.Form.DataStatus) : Promise <Model.Data.Status> {
    const response = await $api ('/data-status', {
       method: 'POST',
       body: payload
@@ -16,7 +16,7 @@ export async function createDataStatus (payload: Pick <Model.Data.Status, 'name'
    return response.data
 }
 
-export async function updateDataStatus (id: number, payload: Pick <Model.Data.Status, 'name'>) : Promise <string> {
+export async function updateDataStatus (id: number, payload: API.Request.Form.DataStatus) : Promise <string> {
    const response = await $api (`/data-status/${id}`, {
       method: 'PUT',
       body: payload

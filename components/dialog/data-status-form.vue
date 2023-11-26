@@ -45,7 +45,7 @@ import * as yup from 'yup'
 
 const store = useAppStore()
 const loading : Ref <boolean> = ref(false)
-const state : Ref <Pick <Model.Data.Status, 'name'>> = ref({
+const state : Ref <API.Request.Form.DataStatus> = ref({
    name: store.dialog.data?.name || null
 })
 
