@@ -20,10 +20,10 @@
                </template>
 
                <u-input
-                  v-model="(filters.search as string)"
+                  v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari nama/email/NIP..."
-                  @keydown.enter="fetchOfficers(filters)"
+                  @keydown.enter="fetchOfficers()"
                   @focus="showSearchHint = true"
                   @blur="showSearchHint = false"
                ></u-input>
@@ -32,7 +32,7 @@
             <div class="col-span-2 col-end-13 flex items-end justify-end">
                <u-button
                   icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('officer-create', 'Tambah Diknas', null, () => fetchOfficers(filters))"
+                  @click.stop="store.showDialog('officer-create', 'Tambah Diknas', null, () => fetchOfficers())"
                >
                   Tambah Diknas
                </u-button>
@@ -75,7 +75,7 @@ const rows : Ref <Model.Officer[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const showSearchHint : Ref <boolean> = ref(false)
-const filters = shallowRef <API.Request.Query.Officer> ({
+const filter = shallowRef <API.Request.Query.Officer> ({
    search: null,
    page: 1,
    per_page: 10
@@ -91,7 +91,7 @@ const actionMenu = (row: Model.Supervisor) => ([
       {
          label: 'Sunting',
          icon: 'i-heroicons-pencil-square',
-         click: () => store.showDialog('officer-edit', 'Sunting Diknas', row, () => fetchOfficers(filters.value))
+         click: () => store.showDialog('officer-edit', 'Sunting Diknas', row, () => fetchOfficers())
       },
    ],
    [
@@ -99,18 +99,18 @@ const actionMenu = (row: Model.Supervisor) => ([
          label: 'Hapus',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => store.showDialog('officer-delete', 'Hapus Diknas', row, () => fetchOfficers(filters.value))
+         click: () => store.showDialog('officer-delete', 'Hapus Diknas', row, () => fetchOfficers())
       }
    ]
 ])
 
 onBeforeMount(async () => {
-   await fetchOfficers(filters.value)
+   await fetchOfficers()
 })
 
-const fetchOfficers = async (payload: API.Request.Query.Officer) => {
+const fetchOfficers = async () => {
    loading.value = true
-   await getOfficers(payload)
+   await getOfficers(filter.value)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
@@ -119,8 +119,8 @@ const fetchOfficers = async (payload: API.Request.Query.Officer) => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
-   filters.value = resp
-   await fetchOfficers(filters.value)
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchOfficers()
 })
 </script>

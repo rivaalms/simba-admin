@@ -16,16 +16,16 @@
                label="Sekolah"
             >
                <u-select-menu
-                  v-model="(filters.school as number)"
+                  v-model="(filter.school as number)"
                   :options="schoolOptions"
                   value-attribute="value"
                   searchable
                   searchable-placeholder="Cari..."
                   :search-attributes="['label']"
-                  @update:model-value="fetchData(filters)"
+                  @update:model-value="fetchData()"
                >
                   <template #label>
-                     {{ schoolOptions.find(item => item.value === filters.school)?.label || 'Pilih sekolah...' }}
+                     {{ schoolOptions.find(item => item.value === filter.school)?.label || 'Pilih sekolah...' }}
                   </template>
 
                   <template #option="{ option: school }">
@@ -46,7 +46,7 @@
                label="Kategori"
             >
                <u-select-menu
-                  v-model="(filters.category as number)"
+                  v-model="(filter.category as number)"
                   :options="categoryOptions"
                   value-attribute="value"
                   searchable
@@ -54,11 +54,11 @@
                   :search-attributes="['label']"
                   @update:model-value="(val) => {
                      onCategoryChanges(val)
-                     fetchData(filters)
+                     fetchData()
                   }"
                >
                   <template #label>
-                     {{ categoryOptions.find(item => item.value === filters.category)?.label || 'Pilih kategori...' }}
+                     {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
                   </template>
 
                   <template #option="{ option: category }">
@@ -79,23 +79,23 @@
                label="Tipe"
             >
                <u-select-menu
-                  v-model="(filters.type as number)"
+                  v-model="(filter.type as number)"
                   :options="typeOptions"
                   value-attribute="value"
                   searchable
                   :disabled="typeOptions.length < 1"
                   searchable-placeholder="Cari..."
                   :search-attributes="['label']"
-                  @update:model-value="fetchData(filters)"
+                  @update:model-value="fetchData()"
                >
                   <template #label>
-                     <template v-if="filters.category === null">
+                     <template v-if="filter.category === null">
                         <span class="text-gray-500 truncate">
                            Kategori belum dipilih
                         </span>
                      </template>
                      <template v-else>
-                        {{ typeOptions.find(item => item.value === filters.type)?.label || 'Pilih tipe...' }}
+                        {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
                      </template>
                   </template>
 
@@ -117,9 +117,9 @@
                label="Tahun Ajaran"
             >
                <u-input
-                  v-model="(filters.year as string)"
+                  v-model="(filter.year as string)"
                   @keypress="validateNumber"
-                  @keydown.enter="fetchData(filters)"
+                  @keydown.enter="fetchData()"
                >
                   <template #trailing>
                      <u-kbd size="xs">Enter</u-kbd>
@@ -134,16 +134,16 @@
                label="Status"
             >
                <u-select-menu
-                  v-model="(filters.status as number)"
+                  v-model="(filter.status as number)"
                   :options="statusOptions"
                   value-attribute="value"
                   searchable
                   searchable-placeholder="Cari..."
                   :search-attributes="['label']"
-                  @update:model-value="fetchData(filters)"
+                  @update:model-value="fetchData()"
                >
                   <template #label>
-                     {{ statusOptions.find(item => item.value === filters.status)?.label || 'Pilih status...' }}
+                     {{ statusOptions.find(item => item.value === filter.status)?.label || 'Pilih status...' }}
                   </template>
 
                   <template #option="{ option: status }">
@@ -169,7 +169,7 @@
             <div class="col-span-2 flex items-end justify-end">
                <u-button
                   icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData(filters))"
+                  @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData())"
                >
                   Tambah Data
                </u-button>
@@ -223,13 +223,14 @@ const columns = [
 ]
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filters : Ref <API.Request.Query.Data> = shallowRef({
+const filter : Ref <API.Request.Query.Data> = shallowRef({
    school: null,
    year: null,
    category: null,
    type: null,
    status: null,
-   per_page: 10
+   per_page: 10,
+   page: 1
 })
 const schoolOptions : Ref <Util.SelectOption[]> = ref([])
 const categoryOptions : Ref <Util.SelectOption[]> = ref([])
@@ -253,12 +254,12 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Sunting data',
          icon: 'i-heroicons-pencil-square',
-         click: () => store.showDialog('data-edit', 'Sunting Data', row, () => fetchData(filters.value))
+         click: () => store.showDialog('data-edit', 'Sunting Data', row, () => fetchData())
       },
       {
          label: 'Sunting File',
          icon: 'i-heroicons-document',
-         click: () => store.showDialog('file-upload', 'Upload File', row, () => fetchData(filters.value)),
+         click: () => store.showDialog('file-upload', 'Upload File', row, () => fetchData()),
       }
    ],
    [
@@ -266,16 +267,13 @@ const actionMenu = (row: Model.Data) => ([
          label: 'Hapus data',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => store.showDialog('data-delete', 'Hapus Data', row, () => fetchData(filters.value))
+         click: () => store.showDialog('data-delete', 'Hapus Data', row, () => fetchData())
       }
    ]
 ])
 
 onBeforeMount(async () => {
-   await fetchData({
-      page: 1,
-      per_page: 10
-   })
+   await fetchData()
 
    await getSchoolOptions()
       .then(resp => {
@@ -305,9 +303,9 @@ onBeforeMount(async () => {
       })
 })
 
-const fetchData = async (payload: API.Request.Query.Data) => {
+const fetchData = async () => {
    loading.value = true
-   await getData(payload)
+   await getData(filter.value)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
@@ -334,7 +332,7 @@ const fetchTypeOptions = async (categoryId: number) => {
 const onCategoryChanges = async (categoryId: number) => {
    await new Promise(async (resolve) => {
       if (!categoryId) {
-         filters.value.type = null
+         filter.value.type = null
          typeOptions.value = []
       }
       else await fetchTypeOptions(categoryId)
@@ -343,9 +341,9 @@ const onCategoryChanges = async (categoryId: number) => {
    })
 }
 
-const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
-   filters.value = resp
-   await fetchData(filters.value)
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchData()
 })
 
 const statusColor = (statusId: number) => {

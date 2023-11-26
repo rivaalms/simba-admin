@@ -20,10 +20,10 @@
                   </span>
                </template>
                <u-input
-                  v-model="(filters.search as string)"
+                  v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari nama/email/kepala sekolah..."
-                  @keyup.enter="fetchSchools(filters)"
+                  @keyup.enter="fetchSchools()"
                   @focus="showSearchHint = true"
                   @blur="showSearchHint = false"
                ></u-input>
@@ -36,16 +36,16 @@
                label="Tipe"
             >
                <u-select-menu
-                  v-model="(filters.type as number)"
+                  v-model="(filter.type as number)"
                   :options="typeOptions"
                   value-attribute="value"
                   searchable
                   searchable-placeholder="Cari..."
                   :search-attributes="['label']"
-                  @update:model-value="fetchSchools(filters)"
+                  @update:model-value="fetchSchools()"
                >
                   <template #label>
-                     {{ typeOptions.find(item => item.value === filters.type)?.label || 'Pilih tipe...' }}
+                     {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
                   </template>
 
                   <template #option="{ option: type }">
@@ -66,16 +66,16 @@
                label="Pengawas"
             >
                <u-select-menu
-                  v-model="(filters.supervisor as number)"
+                  v-model="(filter.supervisor as number)"
                   :options="supervisorOptions"
                   value-attribute="value"
                   searchable
                   searchable-placeholder="Cari..."
                   :search-attributes="['label']"
-                  @update:model-value="fetchSchools(filters)"
+                  @update:model-value="fetchSchools()"
                >
                   <template #label>
-                     {{ supervisorOptions.find(item => item.value === filters.supervisor)?.label || 'Pilih pengawas...' }}
+                     {{ supervisorOptions.find(item => item.value === filter.supervisor)?.label || 'Pilih pengawas...' }}
                   </template>
 
                   <template #option="{ option: supervisor }">
@@ -94,7 +94,7 @@
             <div class="col-span-2 col-end-13 flex items-end justify-end">
                <u-button
                   icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('school-create', 'Tambah Sekolah', null, () => fetchSchools(filters))"
+                  @click.stop="store.showDialog('school-create', 'Tambah Sekolah', null, () => fetchSchools())"
                >
                   Tambah Sekolah
                </u-button>
@@ -139,7 +139,7 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
 const rows : Ref <Model.School[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filters = shallowRef <API.Request.Query.School> ({
+const filter = shallowRef <API.Request.Query.School> ({
    search: null,
    supervisor: null,
    type: null,
@@ -160,7 +160,7 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Sunting sekolah',
          icon: 'i-heroicons-pencil-square',
-         click: () => store.showDialog('school-edit', 'Sunting Sekolah', row, () => fetchSchools(filters.value))
+         click: () => store.showDialog('school-edit', 'Sunting Sekolah', row, () => fetchSchools())
       },
    ],
    [
@@ -168,16 +168,13 @@ const actionMenu = (row: Model.Data) => ([
          label: 'Hapus sekolah',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => store.showDialog('school-delete', 'Hapus Sekolah', row, () => fetchSchools(filters.value))
+         click: () => store.showDialog('school-delete', 'Hapus Sekolah', row, () => fetchSchools())
       }
    ]
 ])
 
 onBeforeMount(async () => {
-   await fetchSchools({
-      page: 1,
-      per_page: 10
-   })
+   await fetchSchools()
 
    await getSupervisorOptions()
       .then(resp => {
@@ -198,9 +195,9 @@ onBeforeMount(async () => {
       })
 })
 
-const fetchSchools = async (payload: API.Request.Query.School) => {
+const fetchSchools = async () => {
    loading.value = true
-   await getSchools(payload)
+   await getSchools(filter.value)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
@@ -209,8 +206,8 @@ const fetchSchools = async (payload: API.Request.Query.School) => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
-   filters.value = resp
-   await fetchSchools(filters.value)
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchSchools()
 })
 </script>

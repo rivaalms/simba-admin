@@ -20,10 +20,10 @@
                </template>
 
                <u-input
-                  v-model="(filters.search as string)"
+                  v-model="(filter.search as string)"
                   icon="i-heroicons-magnifying-glass"
                   placeholder="Cari nama/email/NIP..."
-                  @keydown.enter="fetchSupervisors(filters)"
+                  @keydown.enter="fetchSupervisors()"
                   @focus="showSearchHint = true"
                   @blur="showSearchHint = false"
                ></u-input>
@@ -32,7 +32,7 @@
             <div class="col-span-2 col-end-13 flex items-end justify-end">
                <u-button
                   icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('supervisor-create', 'Tambah Pengawas', null, () => fetchSupervisors(filters))"
+                  @click.stop="store.showDialog('supervisor-create', 'Tambah Pengawas', null, () => fetchSupervisors())"
                >
                   Tambah Pengawas
                </u-button>
@@ -75,7 +75,7 @@ const rows : Ref <Model.Supervisor[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
 const showSearchHint : Ref <boolean> = ref(false)
-const filters = shallowRef <API.Request.Query.Supervisor> ({
+const filter = shallowRef <API.Request.Query.Supervisor> ({
    search: null,
    page: 1,
    per_page: 10
@@ -91,7 +91,7 @@ const actionMenu = (row: Model.Supervisor) => ([
       {
          label: 'Sunting',
          icon: 'i-heroicons-pencil-square',
-         click: () => store.showDialog('supervisor-edit', 'Sunting Pengawas', row, () => fetchSupervisors(filters.value))
+         click: () => store.showDialog('supervisor-edit', 'Sunting Pengawas', row, () => fetchSupervisors())
       },
    ],
    [
@@ -99,18 +99,18 @@ const actionMenu = (row: Model.Supervisor) => ([
          label: 'Hapus',
          icon: 'i-heroicons-trash',
          slot: 'delete',
-         click: () => store.showDialog('supervisor-delete', 'Hapus Pengawas', row, () => fetchSupervisors(filters.value))
+         click: () => store.showDialog('supervisor-delete', 'Hapus Pengawas', row, () => fetchSupervisors())
       }
    ]
 ])
 
 onBeforeMount(async () => {
-   await fetchSupervisors(filters.value)
+   await fetchSupervisors()
 })
 
-const fetchSupervisors = async (payload: API.Request.Query.Supervisor) => {
+const fetchSupervisors = async () => {
    loading.value = true
-   await getSupervisors(payload)
+   await getSupervisors(filter.value)
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
@@ -119,8 +119,8 @@ const fetchSupervisors = async (payload: API.Request.Query.Supervisor) => {
       .finally(() => loading.value = false)
 }
 
-const onTableEmit = async (data: any) => await mapFilters(data, filters.value).then(async (resp) => {
-   filters.value = resp
-   await fetchSupervisors(filters.value)
+const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
+   filter.value = resp
+   await fetchSupervisors()
 })
 </script>
