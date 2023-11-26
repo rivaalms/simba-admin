@@ -61,6 +61,10 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'data-type-create': () => import('@/components/dialog/data-type-form.vue'),
    'data-type-edit': () => import('@/components/dialog/data-type-form.vue'),
    'data-type-delete': () => import('@/components/dialog/delete.vue'),
+
+   'school-type-create': () => import('@/components/dialog/school-type-form.vue'),
+   'school-type-edit': () => import('@/components/dialog/school-type-form.vue'),
+   'school-type-delete': () => import('@/components/dialog/delete.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',

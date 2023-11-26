@@ -42,6 +42,10 @@ declare namespace API {
          }
 
          type SchoolTeacher = SchoolStudent
+
+         type SchoolType = {
+            search?: string | null
+         }
       }
 
       namespace Form {
@@ -83,6 +87,10 @@ declare namespace API {
          type DataType = Wildcard & {
             name: string | null
             data_category_id: number | null
+         }
+
+         type SchoolType = Wildcard & {
+            name: string | null
          }
       }
    }
