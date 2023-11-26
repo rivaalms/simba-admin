@@ -54,7 +54,6 @@ export default defineNuxtConfig({
       '@pinia-plugin-persistedstate/nuxt',
       '@nuxt/ui',
       'dayjs-nuxt',
-      '@nuxt/image'
    ],
 
    build: {
