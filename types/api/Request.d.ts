@@ -10,7 +10,7 @@ declare namespace API {
       }
 
       namespace Query {
-         type Data = {
+         type Data = Wildcard & {
             school?: number | string | null
             year?: string | null
             category?: number | string | null
@@ -20,7 +20,7 @@ declare namespace API {
             page?: number | string | null
          }
 
-         type School = {
+         type School = Wildcard & {
             type?: number | null
             supervisor?: number | null
             page?: number | string | null
@@ -28,7 +28,7 @@ declare namespace API {
             search?: string | null
          }
 
-         type Supervisor = {
+         type Supervisor = Wildcard & {
             page?: number | string | null
             per_page?: number | string | null
             search?: string | null
@@ -36,14 +36,14 @@ declare namespace API {
 
          type Officer = API.Request.Query.Supervisor
 
-         type SchoolStudent = {
+         type SchoolStudent = Wildcard & {
             school_id: string | number | null
             year: string | null
          }
 
          type SchoolTeacher = SchoolStudent
 
-         type SchoolType = {
+         type SchoolType = Wildcard & {
             search?: string | null
          }
 
@@ -55,7 +55,7 @@ declare namespace API {
       }
 
       namespace Form {
-         type Data = Wildcard & {
+         type Data = {
             school_id: number | string | null
             year: string | null
             data_type_id: number | string | null
@@ -63,7 +63,7 @@ declare namespace API {
             file: File | Blob | null
          }
 
-         type School = Wildcard & {
+         type School = {
             school_type_id: number | null
             supervisor_id: number | null
             principal: string | null
@@ -73,7 +73,7 @@ declare namespace API {
             password: string | null
          }
 
-         type Supervisor = Wildcard & {
+         type Supervisor = {
             name: string | null
             employee_number: string | null
             email: string | null
@@ -82,24 +82,24 @@ declare namespace API {
 
          type Officer = API.Request.Form.Supervisor
 
-         type DataStatus = Wildcard & {
+         type DataStatus = {
             name: string | null
          }
 
-         type DataCategory = Wildcard & {
+         type DataCategory = {
             name: string | null
          }
 
-         type DataType = Wildcard & {
+         type DataType = {
             name: string | null
             data_category_id: number | null
          }
 
-         type SchoolType = Wildcard & {
+         type SchoolType = {
             name: string | null
          }
 
-         type Subject = Wildcard & {
+         type Subject = {
             name: string | null
             abbreviation: string | null
          }
