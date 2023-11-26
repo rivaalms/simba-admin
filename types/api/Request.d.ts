@@ -1,3 +1,7 @@
+type Wildcard = {
+   [key?: string]: any
+}
+
 declare namespace API {
    namespace Request {
       type Login = {
@@ -14,7 +18,6 @@ declare namespace API {
             status?: number | string | null
             per_page?: number | string | null
             page?: number | string | null
-            [key: string]: number | string | null
          }
 
          type School = {
@@ -23,14 +26,12 @@ declare namespace API {
             page?: number | string | null
             per_page?: number | string | null
             search?: string | null
-            [key: string]: number | string | null
          }
 
          type Supervisor = {
             page?: number | string | null
             per_page?: number | string | null
             search?: string | null
-            [key: string]: number | string | null
          }
 
          type Officer = API.Request.Query.Supervisor
@@ -38,23 +39,21 @@ declare namespace API {
          type SchoolStudent = {
             school_id: string | number | null
             year: string | null
-            [key: string]: number | string | null
          }
 
          type SchoolTeacher = SchoolStudent
       }
 
       namespace Form {
-         type Data = {
+         type Data = Wildcard & {
             school_id: number | string | null
             year: string | null
             data_type_id: number | string | null
             data_status_id: number | string | null
             file: File | Blob | null
-            [key?: string]: string | number | Blob | null
          }
 
-         type School = {
+         type School = Wildcard & {
             school_type_id: number | null
             supervisor_id: number | null
             principal: string | null
@@ -62,33 +61,28 @@ declare namespace API {
             name: string | null
             email: string | null
             password: string | null
-            [key?: string] : string | number | null
          }
 
-         type Supervisor = {
+         type Supervisor = Wildcard & {
             name: string | null
             employee_number: string | null
             email: string | null
             password: string | null
-            [key?: string]: string | number | null
          }
 
          type Officer = API.Request.Form.Supervisor
 
-         type DataStatus = {
+         type DataStatus = Wildcard & {
             name: string | null
-            [key?: string]: string | number | null
          }
 
-         type DataCategory = {
+         type DataCategory = Wildcard & {
             name: string | null
-            [key?: string]: string | number | null
          }
 
-         type DataType = {
+         type DataType = Wildcard & {
             name: string | null
             data_category_id: number | null
-            [key?: string]: string | number | null
          }
       }
    }
