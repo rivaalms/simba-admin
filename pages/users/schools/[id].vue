@@ -53,7 +53,7 @@
          </template>
          <div class="grid gap-4">
             <div class="grid grid-cols-12 gap-2">
-               <app-date-picker
+               <date-picker
                   v-model="yearPicker.student"
                   class="col-span-2"
                   :mode="['year-picker']"
@@ -70,15 +70,15 @@
                      readonly
                      :disabled="loading"
                   ></u-input>
-               </app-date-picker>
+               </date-picker>
             </div>
-            <app-data-table
+            <data-table
                :columns="studentColumns"
                :rows="students"
                :loading="false"
                :total="0"
                :pagination="false"
-            ></app-data-table>
+            ></data-table>
          </div>
       </u-card>
 
@@ -97,7 +97,7 @@
 
          <div class="grid gap-4">
             <div class="grid grid-cols-12 gap-2">
-               <app-date-picker
+               <date-picker
                   v-model="yearPicker.teacher"
                   class="col-span-2"
                   :mode="['year-picker']"
@@ -114,16 +114,16 @@
                      readonly
                      :disabled="loading"
                   ></u-input>
-               </app-date-picker>
+               </date-picker>
             </div>
 
-            <app-data-table
+            <data-table
                :columns="teacherColumns"
                :rows="teachers"
                :loading="false"
                :total="0"
                :pagination="false"
-            ></app-data-table>
+            ></data-table>
          </div>
       </u-card>
    </div>

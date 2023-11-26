@@ -1,6 +1,6 @@
 <template>
 <u-card>
-   <app-data-table
+   <data-table
       :columns="columns"
       :rows="rows"
       :pagination="false"
@@ -54,7 +54,7 @@
             </template>
          </u-dropdown>
       </template>
-   </app-data-table>
+   </data-table>
 </u-card>
 </template>
 

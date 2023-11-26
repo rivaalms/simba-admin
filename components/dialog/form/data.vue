@@ -36,7 +36,7 @@
          name="year"
          required
       >
-         <app-date-picker
+         <date-picker
             v-model="yearPicker"
             :mode="['year-picker']"
             @update:model-value="(val) => {
@@ -50,7 +50,7 @@
                readonly
                :disabled="loading"
             ></u-input>
-         </app-date-picker>
+         </date-picker>
       </u-form-group>
 
       <u-form-group
