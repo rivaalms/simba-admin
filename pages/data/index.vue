@@ -223,7 +223,7 @@ const columns = [
 ]
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filters : Ref <API.Request.Query.Data> = ref({
+const filters : Ref <API.Request.Query.Data> = shallowRef({
    school: null,
    year: null,
    category: null,
