@@ -1,4 +1,4 @@
-export async function getSubjects (payload: API.Request.Query.Subject) : Promise <Util.Subject[] | Util.LaravelPagination <Util.Subject[]>> {
+export async function getSubjects (payload?: API.Request.Query.Subject) : Promise <Util.Subject[] | Util.LaravelPagination <Util.Subject[]>> {
    const response = await $api('/subjects', {
       method: 'GET',
       query: payload

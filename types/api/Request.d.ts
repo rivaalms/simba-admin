@@ -73,6 +73,7 @@ declare namespace API {
             name: string | null
             email: string | null
             password: string | null
+            confirm_password: string | null
          }
 
          type Supervisor = {
@@ -80,6 +81,7 @@ declare namespace API {
             employee_number: string | null
             email: string | null
             password: string | null
+            confirm_password: string | null
          }
 
          type Officer = API.Request.Form.Supervisor

@@ -137,8 +137,8 @@ const dayjs = useDayjs()
 const loading : Ref <boolean> = ref(false)
 const school : Ref <Model.School | null> = ref(null)
 
-const religions = await getReligions()
-const subjects = await getSubjects()
+const religions = await getReligions() as Util.Religion[]
+const subjects = await getSubjects() as Util.Subject[]
 
 const studentColumns : ComputedRef <Util.TableColumns[]> = computed(() => {
    const religionColumns = religions.map(item => ({

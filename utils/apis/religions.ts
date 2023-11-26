@@ -1,4 +1,4 @@
-export async function getReligions (payload: API.Request.Query.Religion) : Promise <Util.Religion[] | Util.LaravelPagination <Util.Religion[]>> {
+export async function getReligions (payload?: API.Request.Query.Religion) : Promise <Util.Religion[] | Util.LaravelPagination <Util.Religion[]>> {
    const response = await $api('/religions', {
       method: 'GET',
       query: payload
