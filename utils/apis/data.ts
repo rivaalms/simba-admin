@@ -56,18 +56,25 @@ export async function deleteData (dataId: number) : Promise <string> {
 }
 
 export async function downloadFile (data: Model.Data) : Promise <boolean> {
-   const response = await $api ('/data/download', {
-      method: 'POST',
-      body: {
-         id: data.id
-      }
-   }) as Blob
+   try {
+      const response = await $api ('/data/download', {
+         method: 'POST',
+         body: {
+            id: data.id
+         }
+      }) as Blob | API.Response <null>
 
-   const url = window.URL.createObjectURL(response)
-   const a = document.createElement('a')
-   const filename = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
-   a.href = url
-   a.setAttribute('download', filename)
-   a.click()
-   return true
+      if (!response) throw Error('404')
+
+      const url = window.URL.createObjectURL(response as Blob)
+      const a = document.createElement('a')
+      const filename = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
+      a.href = url
+      a.setAttribute('download', filename)
+      a.click()
+      return true
+   } catch (e: any) {
+      useAppStore().notify('error', e.message === '404' ? 'File tidak ditemukan' : 'Gagal mengunduh file')
+      return false
+   }
 }
