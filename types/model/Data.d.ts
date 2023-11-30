@@ -39,13 +39,4 @@ declare namespace Model {
          updated_at?: string | null
       }
    }
-
-   type Redraft = {
-      id: number
-      user_id: number
-      data_id: number
-      message: string
-      created_at?: string | null
-      updated_at?: string | null
-   }
 }

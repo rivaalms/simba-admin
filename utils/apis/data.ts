@@ -6,6 +6,13 @@ export async function getData (payload: API.Request.Query.Data) : Promise <Util.
    return response.data
 }
 
+export async function getSingleData (id: number) : Promise <Model.Data> {
+   const response = await $api (`/data/${id}`, {
+      method: 'GET',
+   }) as API.Response <Model.Data>
+   return response.data
+}
+
 export async function createData (payload: API.Request.Form.Data) : Promise <Model.Data> {
    const form = new FormData()
    for (const i in payload) {

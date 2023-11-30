@@ -249,7 +249,7 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Lihat detail',
          icon: 'i-heroicons-document-magnifying-glass',
-         click: () => { console.log(row) }
+         click: () => useRouter().push(`/data/${row.id}`)
       },
       {
          label: 'Sunting data',

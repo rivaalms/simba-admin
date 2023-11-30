@@ -73,10 +73,14 @@ declare namespace API {
          }
 
          type Religion = API.Request.Query.Subject
+
+         type Comment = {
+            sort?: string | null
+         }
       }
 
       namespace Form {
-         type Data = {
+         type Data = Wildcard & {
             school_id: number | string | null
             year: string | null
             data_type_id: number | string | null
@@ -129,6 +133,13 @@ declare namespace API {
 
          type Religion = {
             name: string | null
+         }
+
+         type Comment = {
+            user_id: number | null
+            data_id: number | null
+            message: string | null
+            reply_to: number | null
          }
       }
    }
