@@ -25,12 +25,20 @@
       <loading-state v-if="commentLoading"></loading-state>
 
       <div v-else class="grid divide-y">
-         <template v-for="comment in comments">
-            <comment-block
-               :comment="comment"
-               :data="data!"
-               @reply="replyToComment"
-            />
+         <template v-if="comments.length > 0">
+            <template v-for="comment in comments">
+               <comment-block
+                  :comment="comment"
+                  :data="data!"
+                  @reply="replyToComment"
+               />
+            </template>
+         </template>
+
+         <template v-else>
+            <div class="flex justify-center text-sm text-gray-500">
+               Tidak ada komentar
+            </div>
          </template>
       </div>
    </u-card>
@@ -127,56 +135,59 @@
 
          <loading-state v-if="dataLoading"></loading-state>
 
-         <u-form
-            v-else
-            :state="commentState"
-            :validate-on="['submit']"
-            @submit="sendComment"
-         >
-            <div class="grid gap-4">
-               <p>Tulis Komentar</p>
+         <div v-else class="grid gap-4">
+            <p>Tulis Komentar</p>
 
-               <u-alert
-                  v-if="isReplyingTo"
-                  color="cyan"
-                  variant="soft"
-                  title="Membalas ke:"
-               >
-                  <template #title="{ title }">
-                     <div class="flex items-center justify-between gap-x-4">
-                        <span class="flex-grow truncate">{{ title }} <span class="font-semibold">{{ isReplyingTo?.user?.name }}</span></span>
-                        <u-button
-                           icon="i-heroicons-x-mark"
-                           variant="ghost"
-                           color="cyan"
-                           @click.stop="cancelReplying"
-                        ></u-button>
-                     </div>
-                  </template>
-                  <template #description>
-                     <p class="truncate">{{ isReplyingTo?.message }}</p>
-                  </template>
-               </u-alert>
+            <u-alert
+               v-if="isReplyingTo"
+               color="cyan"
+               variant="soft"
+               title="Membalas ke:"
+            >
+               <template #title="{ title }">
+                  <div class="flex items-center justify-between gap-x-4">
+                     <span class="flex-grow truncate">{{ title }} <span class="font-semibold">{{ isReplyingTo?.user?.name }}</span></span>
+                     <u-button
+                        icon="i-heroicons-x-mark"
+                        variant="ghost"
+                        color="cyan"
+                        @click.stop="cancelReplying"
+                     ></u-button>
+                  </div>
+               </template>
+               <template #description>
+                  <p class="truncate">{{ isReplyingTo?.message }}</p>
+               </template>
+            </u-alert>
 
-               <u-textarea
-                  ref="commentInput"
-                  v-model="(commentState.message as string)"
-                  :rows="4"
-                  autoresize
-               ></u-textarea>
+            <u-textarea
+               ref="commentInput"
+               v-model="(commentState.message as string)"
+               :rows="4"
+               autoresize
+            ></u-textarea>
 
-               <div class="flex items-center justify-end">
+            <div class="flex items-center justify-end">
+               <u-button-group>
                   <u-button
                      type="submit"
                      :loading="isCommentSending"
                      icon="i-heroicons-paper-airplane"
+                     @click.stop="sendComment"
                   >
-                     Kirim Komentar
+                     Kirim
                   </u-button>
-               </div>
+                  <u-dropdown
+                     :items="commentBtnDropdown()"
+                  >
+                     <u-button
+                        icon="i-heroicons-chevron-down"
+                        class="rounded-s-none"
+                     ></u-button>
+                  </u-dropdown>
+               </u-button-group>
             </div>
-
-         </u-form>
+         </div>
       </u-card>
    </div>
 </div>
@@ -229,6 +240,19 @@ const dataDropdown = () => ([
    ]
 ])
 
+const commentBtnDropdown = () => ([
+   [
+      {
+         label: 'Kirim dan verifikasi',
+         click: () => sendCommentAndMarkStatus(true)
+      },
+      {
+         label: 'Kirim dan tandai revisi',
+         click: () => sendCommentAndMarkStatus(false)
+      }
+   ]
+])
+
 onBeforeMount(async () => {
    await fetchData()
    await fetchComments()
@@ -273,6 +297,7 @@ const cancelReplying = () => {
 }
 
 const sendComment = async () => {
+   if (!commentState.value.message) return store.notify('error', 'Komentar harus diisi')
    commentState.value.data_id = data.value!.id
    isCommentSending.value = true
    await createComment(commentState.value)
@@ -285,6 +310,19 @@ const sendComment = async () => {
       })
       .catch((e: API.Error) => store.notify('error', e.response?._data?.message || 'Error sending comment'))
       .finally(() => isCommentSending.value = false)
+}
+
+const sendCommentAndMarkStatus = async (verify: boolean) => {
+   const { id, path, created_at, updated_at, school, type, status, ..._data } = data.value!
+
+   if (verify) _data.data_status_id = 2
+   else _data.data_status_id = 3
+
+   await sendComment()
+      .then(async () =>
+         await updateData(id, _data)
+            .then(async () => await fetchData())
+      )
 }
 
 const statusColor = (statusId: number) => {

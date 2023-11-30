@@ -85,7 +85,6 @@ declare namespace API {
             year: string | null
             data_type_id: number | string | null
             data_status_id: number | string | null
-            file: File | Blob | null
          }
 
          type School = {
