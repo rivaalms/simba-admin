@@ -23,11 +23,8 @@ export async function updateDataCategory (id: number, payload: API.Request.Form.
 }
 
 export async function deleteDataCategory (id: number) : Promise <string> {
-   const response = await $api ('/data-category', {
+   const response = await $api (`/data-category/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }

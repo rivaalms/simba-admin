@@ -23,11 +23,8 @@ export async function updateDataType (id: number, payload: API.Request.Form.Data
 }
 
 export async function deleteDataType (id: number) : Promise <string> {
-   const response = await $api ('/data-type', {
+   const response = await $api (`/data-type/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }

@@ -23,11 +23,8 @@ export async function updateSubject (id: number, payload: API.Request.Form.Subje
 }
 
 export async function deleteSubject (id: number) : Promise <string> {
-   const response = await $api ('/subject', {
+   const response = await $api (`/subject/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }

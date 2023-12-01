@@ -23,11 +23,8 @@ export async function updateDataStatus (id: number, payload: API.Request.Form.Da
 }
 
 export async function deleteDataStatus (id: number) : Promise <string> {
-   const response = await $api ('data-status', {
+   const response = await $api (`data-status/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }

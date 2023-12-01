@@ -23,11 +23,8 @@ export async function updateSchoolType (id: number, payload: API.Request.Form.Sc
 }
 
 export async function deleteSchoolType (id: number) : Promise <string> {
-   const response = await $api ('/school-type', {
+   const response = await $api (`/school-type/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }

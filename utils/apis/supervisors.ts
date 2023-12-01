@@ -30,11 +30,8 @@ export async function updateSupervisor (supervisorId: number, payload: API.Reque
 }
 
 export async function deleteSupervisor (supervisorId: number) : Promise <string> {
-   const response = await $api('/supervisor', {
+   const response = await $api(`/supervisor/${supervisorId}`, {
       method: 'DELETE',
-      body: {
-         id: supervisorId
-      }
    }) as API.Response <boolean>
    return response.message!
 }

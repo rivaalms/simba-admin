@@ -23,11 +23,8 @@ export async function updateOfficer (officerId: number, payload: API.Request.For
 }
 
 export async function deleteOfficer (officerId: number) : Promise <string> {
-   const response = await $api('/officer', {
+   const response = await $api(`/officer/${officerId}`, {
       method: 'DELETE',
-      body: {
-         id: officerId
-      }
    }) as API.Response <boolean>
    return response.message!
 }

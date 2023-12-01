@@ -46,11 +46,8 @@ export async function updateFile (dataId: number, payload: Pick <API.Request.For
 }
 
 export async function deleteData (dataId: number) : Promise <string> {
-   const response = await $api ('/data', {
+   const response = await $api (`/data/${id}`, {
       method: 'DELETE',
-      body: {
-         id: dataId
-      }
    }) as API.Response <boolean>
    return response.message!
 }

@@ -23,11 +23,8 @@ export async function updateReligion (id: number, payload: API.Request.Form.Reli
 }
 
 export async function deleteReligion (id: number) : Promise <string> {
-   const response = await $api ('/religion', {
+   const response = await $api (`/religion/${id}`, {
       method: 'DELETE',
-      body: {
-         id
-      }
    }) as API.Response <boolean>
    return response.message!
 }
