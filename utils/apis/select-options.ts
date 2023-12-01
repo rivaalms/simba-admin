@@ -42,3 +42,17 @@ export async function getSupervisorOptions () : Promise <Util.SelectOption[]> {
    }) as API.Response <Util.SelectOption[]>
    return response.data
 }
+
+export async function getReligionOptions () : Promise <Util.SelectOption[]> {
+   const response = await $api('/options/religions', {
+      method: 'GET'
+   }) as API.Response <Util.SelectOption[]>
+   return response.data
+}
+
+export async function getSubjectOptions () : Promise <Util.SelectOption[]> {
+   const response = await $api('/options/subjects', {
+      method: 'GET'
+   }) as API.Response <Util.SelectOption[]>
+   return response.data
+}

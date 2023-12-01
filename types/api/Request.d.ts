@@ -140,6 +140,21 @@ declare namespace API {
             message: string | null
             reply_to: number | null
          }
+
+         type SchoolStudent = {
+            school_id: number | null
+            year: string | null
+            grade: number | null
+            religion_id: number | null
+            count: number | null
+         }
+
+         type SchoolTeachers = {
+            school_id: number | null
+            year: string | null
+            subject_id: number | null
+            count: number | null
+         }
       }
    }
 }

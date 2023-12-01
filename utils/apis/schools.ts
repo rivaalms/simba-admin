@@ -44,10 +44,26 @@ export async function getSchoolStudents (payload: API.Request.Query.SchoolStuden
    return response.data
 }
 
+export async function updateSchoolStudents (payload: API.Request.Form.SchoolStudent) : Promise <string> {
+   const response = await $api('/school-students', {
+      method: 'POST',
+      body: payload
+   }) as API.Response <boolean>
+   return response.message!
+}
+
 export async function getSchoolTeachers (payload: API.Request.Query.SchoolTeacher) : Promise <Model.School.Teacher[]> {
    const response = await $api(`/school-teachers`, {
       method: 'GET',
       query: payload
    }) as API.Response <Model.School.Teacher[]>
    return response.data
+}
+
+export async function updateSchoolTeachers (payload: API.Request.Form.SchoolTeachers) : Promise <string> {
+   const response = await $api('/school-teachers', {
+      method: 'POST',
+      body: payload
+   }) as API.Response <boolean>
+   return response.message!
 }

@@ -22,13 +22,18 @@
          </div>
 
          <div class="text-sm">
+            <p class="text-gray-500">Jenis Sekolah</p>
+            <p class="tracking-wide">{{ school.type?.name }}</p>
+         </div>
+
+         <div class="text-sm">
             <p class="text-gray-500">Kepala Sekolah</p>
-            <p class="tracking-wide">{{ school.principal }}</p>
+            <p class="tracking-wide">{{ school.principal || '-' }}</p>
          </div>
 
          <div class="text-sm">
             <p class="text-gray-500">Alamat</p>
-            <p class="tracking-wide">{{ school.address }}</p>
+            <p class="tracking-wide">{{ school.address || '-' }}</p>
          </div>
 
          <div class="text-sm">
@@ -46,6 +51,7 @@
                <u-button
                   variant="outline"
                   icon="i-heroicons-plus"
+                  @click.stop="store.showDialog('student-create', 'Perbarui Data Siswa', school, () => fetchStudents())"
                >
                   Perbarui data siswa
                </u-button>
@@ -89,6 +95,7 @@
                <u-button
                   variant="outline"
                   icon="i-heroicons-plus"
+                  @click.stop="store.showDialog('teacher-create', 'Perbarui Data Guru', school, () => fetchTeachers())"
                >
                   Perbarui data guru
                </u-button>
@@ -157,13 +164,6 @@ const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
    school_id: useRoute().params.id as string,
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
-// const totalStudents : ComputedRef <any> = computed(() => {
-//    let total = 0
-//    if (students.value.length > 0) {
-//       students.value.forEach((item: any) => total += item.total)
-//    }
-//    return total
-// })
 
 const teacherColumns : ComputedRef <any> = computed(() => [
    { key: 'subject', label: 'Subjek' },

@@ -42,6 +42,9 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'school-edit': () => import('@/components/dialog/form/school.vue'),
    'school-delete': () => import('@/components/dialog/delete.vue'),
 
+   'student-create': () => import('@/components/dialog/form/school-students.vue'),
+   'teacher-create': () => import('@/components/dialog/form/school-teachers.vue'),
+
    'supervisor-create': () => import('@/components/dialog/form/supervisor.vue'),
    'supervisor-edit': () => import('@/components/dialog/form/supervisor.vue'),
    'supervisor-delete': () => import('@/components/dialog/delete.vue'),
