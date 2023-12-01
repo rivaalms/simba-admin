@@ -89,7 +89,6 @@ const submit = async () => {
          navigateTo('/')
       })
       .catch((error: API.Error) => {
-         store.notify('error', error.response._data.message!)
          state.value.password = ''
       })
       .finally(() => loading.value = false)

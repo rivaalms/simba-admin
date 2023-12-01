@@ -195,7 +195,6 @@ const fetchSchool = async () => {
       .then(resp => {
          school.value = resp
       })
-      .catch((e: API.Error) => store.notify('error', e.response?._data?.message || 'Error fetching school'))
       .finally(() => loading.value = false)
 }
 
@@ -204,7 +203,6 @@ const fetchStudents = async () => {
       .then(async (resp) => {
          students.value = await mapStudents(resp, religions)
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
 }
 
 const fetchTeachers = async () => {
@@ -212,6 +210,5 @@ const fetchTeachers = async () => {
       .then(async (resp) => {
          teachers.value = await mapTeachers(resp, subjects)
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
 }
 </script>

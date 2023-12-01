@@ -83,6 +83,5 @@ const fetchSupervisor = async () => {
       .then(resp => {
          supervisor.value = resp
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
 }
 </script>

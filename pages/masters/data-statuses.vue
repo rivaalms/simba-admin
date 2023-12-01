@@ -106,7 +106,6 @@ const fetchStatus = async () => {
          rows.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).data || resp as Model.Data.Status[]
          dataLength.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).total || 0
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data?.message! || `${error}`))
       .finally(() => loading.value = false)
 }
 

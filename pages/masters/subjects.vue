@@ -111,7 +111,6 @@ const fetchSubjects = async () => {
          rows.value = (resp as Util.LaravelPagination <Util.Subject[]>).data || resp as Util.Subject[]
          dataLength.value = (resp as Util.LaravelPagination <Util.Subject[]>).data ? (resp as Util.LaravelPagination <Util.Subject[]>).total : 0
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
 

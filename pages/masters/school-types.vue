@@ -107,7 +107,6 @@ const fetchTypes = async () => {
          rows.value = (resp as Util.LaravelPagination <Model.School.Type[]>).data || resp as Model.School.Type[]
          dataLength.value = (resp as Util.LaravelPagination <Model.School.Type[]>).total || 0
       })
-      .catch((e: API.Error) => store.notify('error', e.response?._data?.message || `${e}`))
       .finally(() => loading.value = false)
 }
 

@@ -106,7 +106,6 @@ const fetchCategories = async () => {
          rows.value = (resp as Util.LaravelPagination <Model.Data.Category[]>).data || resp as Model.Data.Category[]
          dataLength.value = (resp as Util.LaravelPagination <Model.Data.Category[]>).total || 0
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
 

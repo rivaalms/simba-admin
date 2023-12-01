@@ -1,7 +1,7 @@
 import type { UseFetchOptions } from "nuxt/app"
 
 export const $api = async (url: string, opts?: UseFetchOptions<any>) : Promise <unknown> => {
-   const { data } = await useFetch(url, {
+   const { data, error } = await useFetch(url, {
       baseURL: useRuntimeConfig().public.apiBaseUrl,
       ...opts,
 
@@ -23,26 +23,26 @@ export const $api = async (url: string, opts?: UseFetchOptions<any>) : Promise <
       async onResponse({ response }) {
          return response._data
       },
-
-      async onResponseError({ response }) {
-         const { status, _data } = response
-
-         if (status === 403) {
-            useAppStore().notify('error', 'Akses tidak diizinkan', 'api-response-error')
-            return
-         }
-
-         const message = `${status}: ${_data?.message}`
-
-         useAppStore().notify('error', message, 'api-response-error')
-
-         if (status === 401) {
-            useAuthStore().$reset()
-            localStorage.removeItem('user')
-            localStorage.removeItem('token')
-            navigateTo('/login')
-         }
-      }
    })
+
+   if (error.value) {
+      const { statusCode, data } = error.value
+
+      if (statusCode === 403) {
+         useAppStore().notify('error', 'Akses tidak diizinkan', 'api-response-error')
+         return
+      }
+
+      const message = `${statusCode}: ${data?.message}`
+      useAppStore().notify('error', message, 'api-response-error')
+
+      if (statusCode === 401) {
+         useAuthStore().$reset()
+         localStorage.removeItem('user')
+         localStorage.removeItem('token')
+         return navigateTo('/login')
+      }
+   }
+
    return data.value
 }

@@ -110,7 +110,6 @@ const fetchReligions = async () => {
          rows.value = (resp as Util.LaravelPagination <Util.Religion[]>).data || resp as Util.Religion[]
          dataLength.value = (resp as Util.LaravelPagination <Util.Religion[]>).data ? (resp as Util.LaravelPagination <Util.Religion[]>).total : 0
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
 

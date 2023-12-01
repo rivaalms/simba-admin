@@ -244,7 +244,6 @@ const actionMenu = (row: Model.Data) => ([
          icon: 'i-heroicons-folder-arrow-down',
          click: () => downloadFile(row)
             .then(resp => store.notify('success', 'File berhasil diunduh'))
-            .catch((error: API.Error) => store.notify('error', error.response._data.message || 'Error downloading data'))
       },
       {
          label: 'Lihat detail',
@@ -309,9 +308,6 @@ const fetchData = async () => {
       .then(resp => {
          rows.value = resp.data
          dataLength.value = resp.total
-      })
-      .catch((error: API.Error) => {
-         store.notify('error', error.response._data.message || 'Error fetching data')
       })
       .finally(() => {
          loading.value = false

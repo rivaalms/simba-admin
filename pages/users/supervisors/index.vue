@@ -115,7 +115,6 @@ const fetchSupervisors = async () => {
          rows.value = resp.data
          dataLength.value = resp.total
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data?.message || 'Error fetching supervisors'))
       .finally(() => loading.value = false)
 }
 

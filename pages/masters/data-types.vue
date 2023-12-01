@@ -147,7 +147,6 @@ const fetchTypes = async () => {
          rows.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).data || resp as Model.Data.Type[]
          dataLength.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).total || 0
       })
-      .catch((error: API.Error) => store.notify('error', error.response?._data.message || `${error}`))
       .finally(() => loading.value = false)
 }
 

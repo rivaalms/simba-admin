@@ -266,7 +266,6 @@ const fetchData = async () => {
       .then(resp => {
          data.value = resp
       })
-      .catch((e: API.Error) => store.notify('error', e.response?._data?.message || 'Error fetching school'))
       .finally(() => dataLoading.value = false)
 }
 
@@ -280,7 +279,6 @@ const fetchComments = async () => {
             replies_visible: false
          }))
       })
-      .catch((e: API.Error) => store.notify('error', e.response?._data?.message || 'Error fetching school'))
       .finally(() => commentLoading.value = false)
 }
 
@@ -308,7 +306,6 @@ const sendComment = async () => {
          isReplyingTo.value = null
          await fetchComments()
       })
-      .catch((e: API.Error) => store.notify('error', e.response?._data?.message || 'Error sending comment'))
       .finally(() => isCommentSending.value = false)
 }
 

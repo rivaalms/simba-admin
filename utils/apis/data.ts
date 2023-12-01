@@ -46,7 +46,7 @@ export async function updateFile (dataId: number, payload: Pick <API.Request.For
 }
 
 export async function deleteData (dataId: number) : Promise <string> {
-   const response = await $api (`/data/${id}`, {
+   const response = await $api (`/data/${dataId}`, {
       method: 'DELETE',
    }) as API.Response <boolean>
    return response.message!
@@ -61,8 +61,6 @@ export async function downloadFile (data: Model.Data) : Promise <boolean> {
          }
       }) as Blob | API.Response <null>
 
-      if (!response) throw Error('404')
-
       const url = window.URL.createObjectURL(response as Blob)
       const a = document.createElement('a')
       const filename = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
@@ -71,7 +69,6 @@ export async function downloadFile (data: Model.Data) : Promise <boolean> {
       a.click()
       return true
    } catch (e: any) {
-      useAppStore().notify('error', e.message === '404' ? 'File tidak ditemukan' : 'Gagal mengunduh file')
       return false
    }
 }
