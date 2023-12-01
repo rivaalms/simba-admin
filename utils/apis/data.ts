@@ -69,6 +69,6 @@ export async function downloadFile (data: Model.Data) : Promise <boolean> {
       a.click()
       return true
    } catch (e: any) {
-      return false
+      throw e
    }
 }
