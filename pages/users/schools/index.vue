@@ -14,19 +14,35 @@
                class="col-span-3"
                label="Cari"
             >
-               <template #hint>
-                  <span v-if="showSearchHint" class="text-xs">
-                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
-                  </span>
-               </template>
-               <u-input
-                  v-model="(filter.search as string)"
-                  icon="i-heroicons-magnifying-glass"
-                  placeholder="Cari nama/email/kepala sekolah..."
-                  @keyup.enter="fetchSchools()"
-                  @focus="showSearchHint = true"
-                  @blur="showSearchHint = false"
-               ></u-input>
+               <u-button-group class="w-full">
+                  <u-input
+                     v-model="(filter.search as string)"
+                     placeholder="Cari nama/email/kepala sekolah..."
+                     class="flex-1"
+                     input-class="focus:ring-inset"
+                     @keyup.enter="fetchSchools()"
+                  ></u-input>
+
+                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-none"
+                        @click.stop="async () => {
+                           filter.search = null
+                           await fetchSchools()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-magnifying-glass"
+                     @click.stop="fetchSchools()"
+                  >
+                     Cari
+                  </u-button>
+               </u-button-group>
             </u-form-group>
             <!-- !SECTION -->
 
@@ -35,28 +51,43 @@
                class="col-span-2"
                label="Tipe"
             >
-               <u-select-menu
-                  v-model="(filter.type as number)"
-                  :options="typeOptions"
-                  value-attribute="value"
-                  searchable
-                  searchable-placeholder="Cari..."
-                  :search-attributes="['label']"
-                  @update:model-value="fetchSchools()"
-               >
-                  <template #label>
-                     {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
-                  </template>
+               <u-button-group class="w-full">
+                  <u-select-menu
+                     v-model="(filter.type as number)"
+                     :options="typeOptions"
+                     value-attribute="value"
+                     class="flex-1"
+                     searchable
+                     searchable-placeholder="Cari..."
+                     :search-attributes="['label']"
+                     @update:model-value="fetchSchools()"
+                  >
+                     <template #label>
+                        {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
+                     </template>
 
-                  <template #option="{ option: type }">
-                     <span
-                        class="truncate"
-                        :class="{ 'text-gray-400': type.value === null }"
-                     >
-                        {{ type.label }}
-                     </span>
-                  </template>
-               </u-select-menu>
+                     <template #option="{ option: type }">
+                        <span
+                           class="truncate"
+                           :class="{ 'text-gray-400': type.value === null }"
+                        >
+                           {{ type.label }}
+                        </span>
+                     </template>
+                  </u-select-menu>
+
+                  <u-tooltip v-if="!!filter.type" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-s-none"
+                        @click.stop="async () => {
+                           filter.type = null
+                           await fetchSchools()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+               </u-button-group>
             </u-form-group>
             <!-- !SECTION -->
 
@@ -65,28 +96,43 @@
                class="col-span-2"
                label="Pengawas"
             >
-               <u-select-menu
-                  v-model="(filter.supervisor as number)"
-                  :options="supervisorOptions"
-                  value-attribute="value"
-                  searchable
-                  searchable-placeholder="Cari..."
-                  :search-attributes="['label']"
-                  @update:model-value="fetchSchools()"
-               >
-                  <template #label>
-                     {{ supervisorOptions.find(item => item.value === filter.supervisor)?.label || 'Pilih pengawas...' }}
-                  </template>
+               <u-button-group class="w-full">
+                  <u-select-menu
+                     v-model="(filter.supervisor as number)"
+                     :options="supervisorOptions"
+                     value-attribute="value"
+                     class="flex-1"
+                     searchable
+                     searchable-placeholder="Cari..."
+                     :search-attributes="['label']"
+                     @update:model-value="fetchSchools()"
+                  >
+                     <template #label>
+                        {{ supervisorOptions.find(item => item.value === filter.supervisor)?.label || 'Pilih pengawas...' }}
+                     </template>
 
-                  <template #option="{ option: supervisor }">
-                     <span
-                        class="truncate"
-                        :class="{ 'text-gray-400': supervisor.value === null }"
-                     >
-                        {{ supervisor.label }}
-                     </span>
-                  </template>
-               </u-select-menu>
+                     <template #option="{ option: supervisor }">
+                        <span
+                           class="truncate"
+                           :class="{ 'text-gray-400': supervisor.value === null }"
+                        >
+                           {{ supervisor.label }}
+                        </span>
+                     </template>
+                  </u-select-menu>
+
+                  <u-tooltip v-if="!!filter.supervisor" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-s-none"
+                        @click.stop="async () => {
+                           filter.supervisor = null
+                           await fetchSchools()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+               </u-button-group>
             </u-form-group>
             <!-- !SECTION -->
 
@@ -139,7 +185,7 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
 const rows : Ref <Model.School[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter = shallowRef <API.Request.Query.School> ({
+const filter : Ref <API.Request.Query.School> = ref({
    search: null,
    supervisor: null,
    type: null,
@@ -148,7 +194,6 @@ const filter = shallowRef <API.Request.Query.School> ({
 
 const supervisorOptions : Ref <Util.SelectOption[]> = ref([])
 const typeOptions : Ref <Util.SelectOption[]> = ref([])
-const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Model.Data) => ([
    [
@@ -179,19 +224,11 @@ onBeforeMount(async () => {
    await getSupervisorOptions()
       .then(resp => {
          supervisorOptions.value = resp
-         supervisorOptions.value.unshift({
-            label: 'Pilih pengawas...',
-            value: null
-         })
       })
 
    await getSchoolTypeOptions()
       .then(resp => {
          typeOptions.value = resp
-         typeOptions.value.unshift({
-            label: 'Pilih tipe...',
-            value: null
-         })
       })
 })
 

@@ -14,46 +14,77 @@
                class="col-span-3"
                label="Cari"
             >
-               <template #hint>
-                  <span v-if="showSearchHint" class="text-xs">
-                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
-                  </span>
-               </template>
-               <u-input
-                  v-model="(filter.search as string)"
-                  icon="i-heroicons-magnifying-glass"
-                  placeholder="Cari kategori data..."
-                  @keyup.enter="fetchTypes"
-                  @focus="showSearchHint = true"
-                  @blur="showSearchHint = false"
-               ></u-input>
+               <u-button-group class="w-full">
+                  <u-input
+                     v-model="(filter.search as string)"
+                     placeholder="Cari kategori data..."
+                     class="flex-1"
+                     input-class="focus:ring-inset"
+                     @keyup.enter="fetchTypes"
+                  ></u-input>
+
+                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-none"
+                        @click.stop="async () => {
+                           filter.search = null
+                           await fetchTypes()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-magnifying-glass"
+                     @click.stop="fetchTypes()"
+                  >
+                     Cari
+                  </u-button>
+               </u-button-group>
             </u-form-group>
             <u-form-group
                class="col-span-3"
                label="Kategori"
             >
-               <u-select-menu
-                  v-model="(filter.category as number)"
-                  :options="categoryOptions"
-                  value-attribute="value"
-                  searchable
-                  searchable-placeholder="Cari..."
-                  :search-attributes="['label']"
-                  @update:model-value="fetchTypes()"
-               >
-                  <template #label>
-                     {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
-                  </template>
+               <u-button-group class="w-full">
+                  <u-select-menu
+                     v-model="(filter.category as number)"
+                     :options="categoryOptions"
+                     value-attribute="value"
+                     class="flex-1"
+                     searchable
+                     searchable-placeholder="Cari..."
+                     :search-attributes="['label']"
+                     @update:model-value="fetchTypes()"
+                  >
+                     <template #label>
+                        {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
+                     </template>
 
-                  <template #option="{ option: category }">
-                     <span v-if="category.value === null" class="text-gray-500 font-light truncate">
-                        {{ category.label }}
-                     </span>
-                     <span v-else class="truncate">
-                        {{ category.label }}
-                     </span>
-                  </template>
-               </u-select-menu>
+                     <template #option="{ option: category }">
+                        <span v-if="category.value === null" class="text-gray-500 font-light truncate">
+                           {{ category.label }}
+                        </span>
+                        <span v-else class="truncate">
+                           {{ category.label }}
+                        </span>
+                     </template>
+                  </u-select-menu>
+
+                  <u-tooltip v-if="!!filter.category" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-s-none"
+                        @click.stop="async () => {
+                           filter.category = null
+                           await fetchTypes()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+               </u-button-group>
             </u-form-group>
             <div class="col-span-1 flex items-end justify-end col-end-13">
                <u-button
@@ -100,13 +131,12 @@ const columns = [
 
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter : Ref <API.Request.Query.DataType> = shallowRef({
+const filter : Ref <API.Request.Query.DataType> = ref({
    search: null,
    category: null,
    per_page: 10,
    page: 1
 })
-const showSearchHint : Ref <boolean> = ref(false)
 const categoryOptions : Ref <Util.SelectOption[]> = ref([])
 
 const actionMenu = (row: Model.Data.Category) => ([
@@ -133,10 +163,6 @@ onBeforeMount(async () => {
    await getDataCategoryOptions()
       .then(resp => {
          categoryOptions.value = resp
-         categoryOptions.value.unshift({
-            label: 'Pilih kategori...',
-            value: null
-         })
       })
 })
 

@@ -13,20 +13,35 @@
                class="col-span-3"
                label="Cari"
             >
-               <template #hint>
-                  <span v-if="showSearchHint" class="text-xs">
-                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
-                  </span>
-               </template>
+               <u-button-group class="w-full">
+                  <u-input
+                     v-model="(filter.search as string)"
+                     placeholder="Cari nama/email/NIP..."
+                     class="flex-1"
+                     input-class="focus:ring-inset"
+                     @keydown.enter="fetchSupervisors()"
+                  ></u-input>
 
-               <u-input
-                  v-model="(filter.search as string)"
-                  icon="i-heroicons-magnifying-glass"
-                  placeholder="Cari nama/email/NIP..."
-                  @keydown.enter="fetchSupervisors()"
-                  @focus="showSearchHint = true"
-                  @blur="showSearchHint = false"
-               ></u-input>
+                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-none"
+                        @click.stop="async () => {
+                           filter.search = null
+                           await fetchSupervisors()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-magnifying-glass"
+                     @click.stop="fetchSupervisors()"
+                  >
+                     Cari
+                  </u-button>
+               </u-button-group>
             </u-form-group>
 
             <div class="col-span-2 col-end-13 flex items-end justify-end">
@@ -74,8 +89,7 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
 const rows : Ref <Model.Supervisor[]> = ref([])
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const showSearchHint : Ref <boolean> = ref(false)
-const filter = shallowRef <API.Request.Query.Supervisor> ({
+const filter : Ref <API.Request.Query.Supervisor> = ref({
    search: null,
    page: 1,
    per_page: 10

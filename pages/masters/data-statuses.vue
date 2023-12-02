@@ -14,19 +14,35 @@
                class="col-span-3"
                label="Cari"
             >
-               <template #hint>
-                  <span v-if="showSearchHint" class="text-xs">
-                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
-                  </span>
-               </template>
-               <u-input
-                  v-model="(filter.search as string)"
-                  icon="i-heroicons-magnifying-glass"
-                  placeholder="Cari status data..."
-                  @keyup.enter="fetchStatus"
-                  @focus="showSearchHint = true"
-                  @blur="showSearchHint = false"
-               ></u-input>
+               <u-button-group class="w-full">
+                  <u-input
+                     v-model="(filter.search as string)"
+                     placeholder="Cari kategori data..."
+                     class="flex-1"
+                     input-class="focus:ring-inset"
+                     @keyup.enter="fetchStatus"
+                  ></u-input>
+
+                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-none"
+                        @click.stop="async () => {
+                           filter.search = null
+                           await fetchStatus()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-magnifying-glass"
+                     @click.stop="fetchStatus()"
+                  >
+                     Cari
+                  </u-button>
+               </u-button-group>
             </u-form-group>
             <div class="col-span-2 flex items-end justify-end col-end-13">
                <u-button
@@ -72,10 +88,9 @@ const columns = [
 
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter : Ref <API.Request.Query.DataStatus> = shallowRef({
+const filter : Ref <API.Request.Query.DataStatus> = ref({
    search: null
 })
-const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Model.Data.Status) => ([
    [

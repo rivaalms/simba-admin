@@ -14,19 +14,35 @@
                class="col-span-3"
                label="Cari"
             >
-               <template #hint>
-                  <span v-if="showSearchHint" class="text-xs">
-                     <u-kbd size="xs">Enter</u-kbd> untuk mencari
-                  </span>
-               </template>
-               <u-input
-                  v-model="(filter.search as string)"
-                  icon="i-heroicons-magnifying-glass"
-                  placeholder="Cari kategori data..."
-                  @keyup.enter="fetchSubjects"
-                  @focus="showSearchHint = true"
-                  @blur="showSearchHint = false"
-               ></u-input>
+               <u-button-group class="w-full">
+                  <u-input
+                     v-model="(filter.search as string)"
+                     placeholder="Cari kategori data..."
+                     class="flex-1"
+                     input-class="focus:ring-inset"
+                     @keyup.enter="fetchSubjects"
+                  ></u-input>
+
+                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-none"
+                        @click.stop="async () => {
+                           filter.search = null
+                           await fetchSubjects()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-magnifying-glass"
+                     @click.stop="fetchSubjects()"
+                  >
+                     Cari
+                  </u-button>
+               </u-button-group>
             </u-form-group>
 
             <div class="col-span-1 flex items-end justify-end col-end-13">
@@ -74,13 +90,11 @@ const columns = [
 
 const dataLength : Ref <number> = ref(0)
 const loading : Ref <boolean> = ref(false)
-const filter : Ref <API.Request.Query.Subject> = shallowRef({
+const filter : Ref <API.Request.Query.Subject> = ref({
    search: null,
    page: 1,
    per_page: 10
 })
-
-const showSearchHint : Ref <boolean> = ref(false)
 
 const actionMenu = (row: Util.Subject) => ([
    [
