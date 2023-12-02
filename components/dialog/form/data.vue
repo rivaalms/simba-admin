@@ -47,6 +47,8 @@
             <u-input
                v-model="(state.year as string)"
                input-class="cursor-pointer"
+               icon="i-heroicons-calendar-days"
+               placeholder="Pilih tahun ajaran..."
                readonly
                :disabled="loading"
             ></u-input>
@@ -139,14 +141,32 @@
          name="file"
          required
       >
-         <u-input
+         <input
+            ref="fileInput"
             type="file"
-            :disabled="loading"
+            class="hidden"
             accept=".pdf, .doc, .docx, .xls, .xlsx, application/msword, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.google-apps.document, application/vnd.google-apps.spreadsheet"
-            placeholder="Upload file..."
-            input-class="file:cursor-pointer file:mr-2 file:px-2 file:rounded file:bg-gray-200 file:text-gray-500 file:border-0 file:text-xs file:hover:bg-gray-300"
             @change="onFileChange"
-         ></u-input>
+         >
+
+         <u-button-group class="w-full">
+            <u-button
+            color="white"
+            icon="i-heroicons-document-plus"
+            :disabled="loading"
+            @click.stop="fileInput.click()"
+            ></u-button>
+
+            <u-input
+               :model-value="(fileInputName as string)"
+               readonly
+               class="flex-1"
+               input-class="cursor-pointer focus:ring-inset"
+               placeholder="Pilih file..."
+               :disabled="loading"
+               @click.stop="fileInput.click()"
+            ></u-input>
+         </u-button-group>
       </u-form-group>
    </div>
 
@@ -206,6 +226,11 @@ const schoolOptions : Ref <Util.SelectOption[]> = ref([])
 const categoryOptions : Ref <Util.SelectOption[]> = ref([])
 const typeOptions : Ref <Util.SelectOption[]> = ref([])
 const statusOptions : Ref <Util.SelectOption[]> = ref([])
+
+const fileInput : Ref <any> = ref(null)
+const fileInputName : ComputedRef <string | null> = computed(() => {
+   return state.value.file?.name || null
+})
 
 onBeforeMount(() => {
    getSchoolOptions()
