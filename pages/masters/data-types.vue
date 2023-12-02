@@ -120,6 +120,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Tipe Data')
+
 const rows : Ref <Model.Data.Type[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

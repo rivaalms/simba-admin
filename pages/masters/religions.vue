@@ -79,6 +79,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Agama')
+
 const rows : Ref <Util.Religion[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

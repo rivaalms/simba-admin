@@ -1,17 +1,6 @@
 <template>
 <div v-if="supervisor" class="grid grid-cols-3 gap-2">
    <u-card class="overflow-visible place-self-start">
-      <template #header>
-         <u-button
-            variant="ghost"
-            color="gray"
-            icon="i-heroicons-arrow-left-on-rectangle-20-solid"
-            @click.stop="useRouter().push('/users/supervisors')"
-         >
-            Kembali
-         </u-button>
-      </template>
-
       <div class="flex justify-center mb-4">
          <img src="https://avatars.githubusercontent.com/u/739984?v=4" class="w-2/3 rounded-full object-cover">
       </div>
@@ -71,6 +60,9 @@
 
 <script setup lang="ts">
 const store = useAppStore()
+
+store.setPageTitle('Detail Pengawas', '/users/supervisors')
+
 const supervisor : Ref <Model.Supervisor | null> = ref(null)
 
 onBeforeMount(async () => {

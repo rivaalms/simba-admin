@@ -1,7 +1,10 @@
 import type { NotificationColor } from "@nuxt/ui/dist/runtime/types"
 
 type State = {
-   pageTitle: string
+   page: {
+      title: string
+      backUrl: string | null
+   }
    dialog: {
       id: string
       show: boolean
@@ -15,7 +18,10 @@ export const useAppStore = defineStore('app', {
    persist: true,
 
    state: () : State => ({
-      pageTitle: '',
+      page: {
+         title: '',
+         backUrl: null
+      },
       dialog: {
          id: '',
          show: false,
@@ -26,7 +32,8 @@ export const useAppStore = defineStore('app', {
    }),
 
    getters: {
-      getPageTitle: (state) => state.pageTitle
+      getPageTitle: (state) => state.page.title,
+      getPageBackUrl: (state) => state.page.backUrl,
    },
 
    actions: {
@@ -71,6 +78,12 @@ export const useAppStore = defineStore('app', {
                icon,
             });
          }
+      },
+
+      setPageTitle(title: string, backUrl: string | null = null) {
+         this.page.title = title
+         this.page.backUrl = backUrl
+         useHead({ title })
       }
    }
 })

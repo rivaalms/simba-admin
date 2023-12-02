@@ -79,6 +79,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Mata Pelajaran')
+
 const rows : Ref <Util.Subject[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

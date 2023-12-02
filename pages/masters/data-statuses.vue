@@ -78,6 +78,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Status Data')
+
 const rows : Ref <Model.Data.Status[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

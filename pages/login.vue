@@ -64,6 +64,8 @@ import * as yup from 'yup'
 const authStore = useAuthStore()
 const store = useAppStore()
 
+store.setPageTitle('Login')
+
 definePageMeta({
    layout: false
 })

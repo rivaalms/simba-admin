@@ -78,6 +78,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Daftar Pengawas')
+
 const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
    { key: 'employee_number', label: 'NIP'},
    { key: 'user.name', label: 'Nama' },

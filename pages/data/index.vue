@@ -301,6 +301,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Data')
+
 const rows: Ref <Model.Data[]> = ref([])
 const columns = [
    { key: 'school.user.name', label: 'Sekolah' },

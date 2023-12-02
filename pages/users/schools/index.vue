@@ -172,6 +172,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Daftar Sekolah')
+
 const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
    { key: 'user.name', label: 'Nama Sekolah' },
    { key: 'user.email', label: 'Email' },

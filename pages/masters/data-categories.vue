@@ -78,6 +78,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Kategori Data')
+
 const rows : Ref <Model.Data.Category[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

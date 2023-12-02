@@ -1,16 +1,6 @@
 <template>
 <div v-if="school" class="grid grid-cols-3 gap-2">
    <u-card class="place-self-start overflow-visible">
-      <template #header>
-         <u-button
-            variant="ghost"
-            color="gray"
-            icon="i-heroicons-arrow-left-on-rectangle-20-solid"
-            @click.stop="useRouter().push('/users/schools')"
-         >
-            Kembali
-         </u-button>
-      </template>
       <div class="flex justify-center mb-4">
          <img src="https://avatars.githubusercontent.com/u/739984?v=4" class="w-2/3 rounded-full object-cover">
       </div>
@@ -151,6 +141,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 const dayjs = useDayjs()
+
+store.setPageTitle('Detail Sekolah', '/users/schools')
 
 const loading : Ref <boolean> = ref(false)
 const school : Ref <Model.School | null> = ref(null)

@@ -198,6 +198,8 @@ const store = useAppStore()
 const user = useAuthStore().getUser
 const dayjs = useDayjs()
 
+store.setPageTitle('Detail Data', '/data')
+
 const dataLoading : Ref <boolean> = ref(false)
 const commentLoading : Ref <boolean> = ref(false)
 const data : Ref <Model.Data | null> = ref(null)

@@ -78,6 +78,8 @@
 <script setup lang="ts">
 const store = useAppStore()
 
+store.setPageTitle('Tipe Sekolah')
+
 const rows : Ref <Model.School.Type[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },

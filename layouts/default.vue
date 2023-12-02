@@ -10,6 +10,9 @@
       </aside>
 
       <div ref="main" class="relative flex-1 overflow-y-auto bg-gray-100 flex flex-col">
+
+         <app-title></app-title>
+
          <main class="flex-grow p-2">
             <slot/>
          </main>
