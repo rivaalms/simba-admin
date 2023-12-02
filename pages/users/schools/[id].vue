@@ -44,6 +44,17 @@
    </u-card>
 
    <div class="col-span-2 place-self-start w-full grid gap-2">
+      <div class="grid grid-cols-2 gap-2">
+         <u-card class="overflow visible">
+            <p class="text-sm">Jumlah Siswa</p>
+            <p class="text-2xl">{{ totalStudents }}</p>
+         </u-card>
+         <u-card class="overflow visible">
+            <p class="text-sm">Jumlah Guru</p>
+            <p class="text-2xl">{{ totalTeachers }}</p>
+         </u-card>
+      </div>
+
       <u-card class="overflow-visible">
          <template #header>
             <div class="flex items-center justify-between">
@@ -165,6 +176,12 @@ const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
 
+const totalStudents : ComputedRef <number> = computed(() => {
+   return students.value.reduce((prev, curr) => {
+      return prev + curr.total
+   }, 0)
+})
+
 const teacherColumns : ComputedRef <any> = computed(() => [
    { key: 'subject', label: 'Subjek' },
    { key: 'value', label: 'Jumlah' },
@@ -173,6 +190,12 @@ const teachers : Ref <Util.MapTeacher[]> = ref([])
 const teacherFilter = shallowRef <API.Request.Query.SchoolTeacher> ({
    school_id: useRoute().params.id as string,
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
+})
+
+const totalTeachers : ComputedRef <number> = computed(() => {
+   return teachers.value.reduce((prev, curr) => {
+      return prev + parseInt(curr.value as string)
+   }, 0)
 })
 
 const yearPicker = ref <{ [key: string]: string }> ({
