@@ -1,47 +1,108 @@
 <template>
 <div class="grid grid-cols-3 gap-2">
-   <u-card class="col-span-2 place-self-start w-full max-h-[calc(100dvh-57px-1rem)] overflow-auto">
-      <template #header>
-         <div class="grid grid-cols-12">
-            <p class="col-span-6">
-               Komentar
-            </p>
-            <div class="col-span-6 flex justify-end">
-               <u-select-menu
-                  v-model="(commentFilter.sort as string)"
-                  :options="commentFilterOptions"
-                  option-attribute="label"
-                  value-attribute="value"
-                  @update:model-value="fetchComments"
-               >
-                  <template #label>
-                     {{ commentFilterOptions.find(item => item.value === commentFilter.sort)?.label || 'Urutkan komentar...' }}
-                  </template>
-               </u-select-menu>
+   <div class="col-span-2 grid gap-2 place-self-start w-full">
+      <u-card class="place-self-start w-full max-h-[calc(100dvh-57px-1rem)] overflow-auto">
+         <template #header>
+            <div class="grid grid-cols-12">
+               <p class="col-span-6">
+                  Komentar
+               </p>
+               <div class="col-span-6 flex justify-end">
+                  <u-select-menu
+                     v-model="(commentFilter.sort as string)"
+                     :options="commentFilterOptions"
+                     option-attribute="label"
+                     value-attribute="value"
+                     @update:model-value="fetchComments"
+                  >
+                     <template #label>
+                        {{ commentFilterOptions.find(item => item.value === commentFilter.sort)?.label || 'Urutkan komentar...' }}
+                     </template>
+                  </u-select-menu>
+               </div>
+            </div>
+         </template>
+
+         <loading-state v-if="commentLoading"></loading-state>
+
+         <div v-else class="grid divide-y">
+            <template v-if="comments.length > 0">
+               <template v-for="comment in comments">
+                  <comment-block
+                     :comment="comment"
+                     :data="data!"
+                     @reply="replyToComment"
+                  />
+               </template>
+            </template>
+
+            <template v-else>
+               <div class="flex justify-center text-sm text-gray-500">
+                  Tidak ada komentar
+               </div>
+            </template>
+         </div>
+      </u-card>
+
+      <u-card class="place-self-start w-full">
+
+         <loading-state v-if="dataLoading"></loading-state>
+
+         <div v-else class="grid gap-4">
+            <p>Tulis Komentar</p>
+
+            <u-alert
+               v-if="isReplyingTo"
+               color="cyan"
+               variant="soft"
+               title="Membalas ke:"
+            >
+               <template #title="{ title }">
+                  <div class="flex items-center justify-between gap-x-4">
+                     <span class="flex-grow truncate">{{ title }} <span class="font-semibold">{{ isReplyingTo?.user?.name }}</span></span>
+                     <u-button
+                        icon="i-heroicons-x-mark"
+                        variant="ghost"
+                        color="cyan"
+                        @click.stop="cancelReplying"
+                     ></u-button>
+                  </div>
+               </template>
+               <template #description>
+                  <p class="truncate">{{ isReplyingTo?.message }}</p>
+               </template>
+            </u-alert>
+
+            <u-textarea
+               ref="commentInput"
+               v-model="(commentState.message as string)"
+               :rows="4"
+               autoresize
+            ></u-textarea>
+
+            <div class="flex items-center justify-end">
+               <u-button-group>
+                  <u-button
+                     type="submit"
+                     :loading="isCommentSending"
+                     icon="i-heroicons-paper-airplane"
+                     @click.stop="sendComment"
+                  >
+                     Kirim
+                  </u-button>
+                  <u-dropdown
+                     :items="commentBtnDropdown()"
+                  >
+                     <u-button
+                        icon="i-heroicons-chevron-down"
+                        class="rounded-s-none"
+                     ></u-button>
+                  </u-dropdown>
+               </u-button-group>
             </div>
          </div>
-      </template>
-
-      <loading-state v-if="commentLoading"></loading-state>
-
-      <div v-else class="grid divide-y">
-         <template v-if="comments.length > 0">
-            <template v-for="comment in comments">
-               <comment-block
-                  :comment="comment"
-                  :data="data!"
-                  @reply="replyToComment"
-               />
-            </template>
-         </template>
-
-         <template v-else>
-            <div class="flex justify-center text-sm text-gray-500">
-               Tidak ada komentar
-            </div>
-         </template>
-      </div>
-   </u-card>
+         </u-card>
+   </div>
 
    <div class="grid gap-2 place-self-start w-full">
       <u-card v-if="data" class="place-self-start overflow-visible w-full">
@@ -129,65 +190,6 @@
                <u-icon name="i-heroicons-arrow-top-right-on-square-20-solid"></u-icon>
             </div>
          </nuxt-link>
-      </u-card>
-
-      <u-card class="place-self-start w-full">
-
-         <loading-state v-if="dataLoading"></loading-state>
-
-         <div v-else class="grid gap-4">
-            <p>Tulis Komentar</p>
-
-            <u-alert
-               v-if="isReplyingTo"
-               color="cyan"
-               variant="soft"
-               title="Membalas ke:"
-            >
-               <template #title="{ title }">
-                  <div class="flex items-center justify-between gap-x-4">
-                     <span class="flex-grow truncate">{{ title }} <span class="font-semibold">{{ isReplyingTo?.user?.name }}</span></span>
-                     <u-button
-                        icon="i-heroicons-x-mark"
-                        variant="ghost"
-                        color="cyan"
-                        @click.stop="cancelReplying"
-                     ></u-button>
-                  </div>
-               </template>
-               <template #description>
-                  <p class="truncate">{{ isReplyingTo?.message }}</p>
-               </template>
-            </u-alert>
-
-            <u-textarea
-               ref="commentInput"
-               v-model="(commentState.message as string)"
-               :rows="4"
-               autoresize
-            ></u-textarea>
-
-            <div class="flex items-center justify-end">
-               <u-button-group>
-                  <u-button
-                     type="submit"
-                     :loading="isCommentSending"
-                     icon="i-heroicons-paper-airplane"
-                     @click.stop="sendComment"
-                  >
-                     Kirim
-                  </u-button>
-                  <u-dropdown
-                     :items="commentBtnDropdown()"
-                  >
-                     <u-button
-                        icon="i-heroicons-chevron-down"
-                        class="rounded-s-none"
-                     ></u-button>
-                  </u-dropdown>
-               </u-button-group>
-            </div>
-         </div>
       </u-card>
    </div>
 </div>
