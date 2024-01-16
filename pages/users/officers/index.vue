@@ -102,7 +102,7 @@ const actionMenu = (row: Model.Supervisor) => ([
       {
          label: 'Lihat detail',
          icon: 'i-heroicons-document-magnifying-glass',
-         click: () => { console.log(row) }
+         click: () => navigateTo(`/users/officers/${row.id}`)
       },
       {
          label: 'Sunting',

@@ -6,6 +6,13 @@ export async function getOfficers (payload: API.Request.Query.Officer) : Promise
    return response.data
 }
 
+export async function getOfficerDetails (officerId: number) : Promise <Model.Officer> {
+   const response = await $api (`/officer/${officerId}`, {
+      method: 'GET'
+   }) as API.Response <Model.Officer>
+   return response.data
+}
+
 export async function createOfficer (payload: API.Request.Form.Officer) : Promise <Model.Officer> {
    const response = await $api('/officer', {
       method: 'POST',
