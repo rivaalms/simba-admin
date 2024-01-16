@@ -8,6 +8,7 @@ declare namespace Model {
       created_at?: string | null
       updated_at?: string | null
       userable?: T
+      profile_picture: string | null
    }
 
    type School = {
@@ -35,5 +36,5 @@ declare namespace Model {
       schools?: Omit <Model.School, 'supervisor'>[]
    }
 
-   type Officer = Model.Supervisor
+   type Officer = Omit <Model.Supervisor, 'schools'>
 }

@@ -34,7 +34,10 @@ const dropdownItems = computed(() => [
       {
          label: 'Profil',
          avatar: {
-            src: 'https://avatars.githubusercontent.com/u/739984?v=4'
+            src: user?.profile_picture || '/img/profile.webp'
+         },
+         click: () => {
+            navigateTo('/profile')
          }
       }
    ],
