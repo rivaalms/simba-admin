@@ -33,6 +33,7 @@ const dialogComponent : Ref <string | Dialog.ResolveComponent> = ref(resolveComp
 const dialogWidth : Ref <string> = ref('sm:max-w-lg')
 
 const componentMap : { [key: string]: () => Promise<any> } = {
+   'logout': () => import('@/components/dialog/logout.vue'),
    'data-create': () => import('@/components/dialog/form/data.vue'),
    'data-edit': () => import('@/components/dialog/form/data.vue'),
    'data-delete': () => import('@/components/dialog/delete.vue'),
