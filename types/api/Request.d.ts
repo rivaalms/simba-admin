@@ -155,6 +155,22 @@ declare namespace API {
             subject_id: number | null
             count: number | null
          }
+
+         type ForgotPassword = {
+            email: string | null
+         }
+
+         type ResetPassword = {
+            email: string | null
+            password: string | null
+            password_confirmation: string | null
+            token: string | null
+         }
+
+         type CheckResetPasswordToken = {
+            email: string | null
+            token: string | null
+         }
       }
    }
 }

@@ -1,10 +1,9 @@
 <template>
-<main class="h-screen">
+<main class="h-screen gradient-bg">
    <div class="h-full flex justify-center items-center">
-      <u-card class="w-1/3">
+      <u-card class="w-1/3 ring-0 shadow-xl shadow-blue-100/40">
          <div class="grid grid-cols-1 gap-4">
-            <p class="font-bold">Login</p>
-
+            <p class="font-medium">Login</p>
             <u-form
                :schema="validator"
                :state="state"
@@ -25,23 +24,35 @@
                   </u-form-group>
 
                   <u-form-group
-                     label="Password"
+                     label="Kata Sandi"
                      name="password"
                   >
-                     <u-input
-                        v-model="state.password"
-                        name="password"
-                        icon="i-heroicons-lock-closed"
-                        autocomplete
-                        :type="showPassword ? 'text' : 'password'"
-                     ></u-input>
+                     <u-button-group class="w-full">
+                        <u-input
+                           v-model="state.password"
+                           name="password"
+                           icon="i-heroicons-lock-closed"
+                           autocomplete
+                           class="flex-1"
+                           input-class="focus:ring-inset"
+                           :type="showPassword ? 'text' : 'password'"
+                        ></u-input>
+                        <u-button
+                           :icon="showPassword ? 'i-heroicons-eye' : 'i-heroicons-eye-slash'"
+                           color="white"
+                           @click="showPassword = !showPassword"
+                        ></u-button>
+                     </u-button-group>
                   </u-form-group>
 
                   <div class="flex justify-between items-center gap-2">
-                     <u-checkbox
-                        v-model="showPassword"
-                        label="Show password?"
-                     ></u-checkbox>
+                     <u-button
+                        variant="link"
+                        color="primary"
+                        to="/forgot-password"
+                     >
+                        Lupa kata sandi?
+                     </u-button>
                      <u-button
                         icon="i-heroicons-arrow-right-on-rectangle"
                         type="submit"
@@ -71,8 +82,8 @@ definePageMeta({
 })
 
 const validator = yup.object({
-   email: yup.string().email('Invalid email format').required('Email is required'),
-   password: yup.string().required('Password is required')
+   email: yup.string().email('Email tidak valid').required('Email harus diisi'),
+   password: yup.string().required('Kata sandi harus diisi')
 })
 
 const state : Ref <API.Request.Login> = ref({
@@ -96,3 +107,9 @@ const submit = async () => {
       .finally(() => loading.value = false)
 }
 </script>
+
+<style scoped>
+.gradient-bg {
+   background-image: linear-gradient(109.6deg, #dbeafe 11.2%, #eff6ff 100.2%);
+}
+</style>
