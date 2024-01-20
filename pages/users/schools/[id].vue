@@ -30,7 +30,40 @@
             <p class="text-gray-500">Pengawas</p>
             <nuxt-link :to="`/users/supervisors/${school.supervisor_id}`" class="tracking-wide hover:text-primary transition-colors">{{ school.supervisor?.user?.name }} <u-icon name="i-heroicons-arrow-top-right-on-square-20-solid"></u-icon></nuxt-link>
          </div>
+
+         <div class="text-sm">
+            <p class="text-gray-500">Status</p>
+            <u-badge
+               :color="school.user?.status == 'ACTIVE' ? 'emerald' : 'red'"
+               variant="subtle"
+            >
+               {{ school.user?.status }}
+            </u-badge>
+         </div>
       </div>
+
+      <template #footer>
+         <div class="flex flex-col gap-2">
+            <u-button
+               block
+               :icon="school.user?.status === 'ACTIVE' ? 'i-heroicons-no-symbol' : 'i-heroicons-check'"
+               :color="school.user?.status === 'ACTIVE' ? 'red' : 'emerald'"
+               @click.stop="store.showDialog(school.user?.status == 'ACTIVE' ? 'deactivate-user' : 'activate-user', 'Ubah Status User', school, () => fetchSchool())"
+            >
+               <template v-if="school.user?.status === 'ACTIVE'">Nonaktifkan Pengguna</template>
+               <template v-else>Aktifkan Pengguna</template>
+            </u-button>
+
+            <u-button
+               block
+               icon="i-heroicons-pencil-square"
+               color="amber"
+               @click.stop="store.showDialog('school-edit', 'Sunting Sekolah', school, () => fetchSchool())"
+            >
+               Sunting Pengguna
+            </u-button>
+         </div>
+      </template>
    </u-card>
 
    <div class="col-span-2 place-self-start w-full grid gap-2">
@@ -197,9 +230,7 @@ const yearPicker = ref <{ [key: string]: string }> ({
 
 onBeforeMount(async () => {
    await fetchSchool()
-
    await fetchStudents()
-
    await fetchTeachers()
 })
 

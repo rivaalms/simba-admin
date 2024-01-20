@@ -9,6 +9,7 @@ declare namespace Model {
       updated_at?: string | null
       userable?: T
       profile_picture: string | null
+      status: 'ACTIVE' | 'INACTIVE'
    }
 
    type School = {

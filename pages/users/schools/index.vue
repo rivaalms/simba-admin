@@ -149,6 +149,16 @@
          </div>
       </template>
 
+      <template #user-status="{ row }">
+         <u-badge
+            :color="row.user.status === 'ACTIVE' ? 'emerald' : 'red'"
+            variant="subtle"
+            class="capitalize"
+         >
+            {{ row.user.status.toLowerCase() }}
+         </u-badge>
+      </template>
+
       <template #actions="{ row }">
          <u-dropdown
             :items="actionMenu(row)"
@@ -179,7 +189,7 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
    { key: 'user.email', label: 'Email' },
    { key: 'type.name', label: 'Tipe' },
    { key: 'principal', label: 'Kepala Sekolah' },
-   { key: 'supervisor.user.name', label: 'Pengawas' },
+   { key: 'user.status', label: 'Status' },
    { key: 'updated_at', label: 'Diperbarui' },
    { key: 'actions', label: '' }
 ])

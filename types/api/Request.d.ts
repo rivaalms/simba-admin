@@ -96,6 +96,7 @@ declare namespace API {
             email: string | null
             password: string | null
             confirm_password: string | null
+            status: string | null
          }
 
          type Supervisor = {

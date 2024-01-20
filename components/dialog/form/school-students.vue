@@ -39,7 +39,11 @@
             :options="gradeOptions"
             placeholder="Pilih kelas..."
             :disabled="loading"
-         ></u-select-menu>
+         >
+            <template #label>
+               {{ state.grade || 'Pilih kelas...' }}
+            </template>
+         </u-select-menu>
       </u-form-group>
 
       <u-form-group

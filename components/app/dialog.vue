@@ -77,6 +77,9 @@ const componentMap : { [key: string]: () => Promise<any> } = {
    'religion-create': () => import('@/components/dialog/form/religion.vue'),
    'religion-edit': () => import('@/components/dialog/form/religion.vue'),
    'religion-delete': () => import('@/components/dialog/delete.vue'),
+
+   'activate-user': () => import('@/components/dialog/update-user-status.vue'),
+   'deactivate-user': () => import('@/components/dialog/update-user-status.vue'),
 }
 const widthMap : { [key: string]: string } = {
    'data-create': 'sm:max-w-2xl',

@@ -22,6 +22,10 @@
       <template #status.name-data="{ row }">
          <slot name="status" :row="row"></slot>
       </template>
+
+      <template #user.status-data="{ row }">
+         <slot name="user-status" :row="row"></slot>
+      </template>
    </u-table>
 
    <div v-if="pagination" class="flex justify-between items-center text-sm">

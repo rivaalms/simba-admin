@@ -80,9 +80,30 @@
       </u-form-group>
 
       <u-form-group
+         label="Status"
+         name="status"
+      >
+         <u-select-menu
+            v-model="(state.status as string)"
+            :options="useUserStatus"
+            option-attribute="name"
+            value-attribute="value"
+            :disabled="loading"
+         >
+            <template #label>
+               <template v-if="!state.status || useUserStatus.length < 1">
+                  <span class="text-gray-400">Pilih status...</span>
+               </template>
+               <template v-else>
+                  {{ useUserStatus.find(item => item.value === state.status)?.name }}
+               </template>
+            </template>
+         </u-select-menu>
+      </u-form-group>
+
+      <u-form-group
          label="Kepala Sekolah"
          name="principal"
-         class="col-span-2"
       >
          <u-input
             v-model="(state.principal as string)"
@@ -182,6 +203,7 @@ const state : Ref <API.Request.Form.School> = ref({
    password: null,
    school_type_id: store.dialog.data?.school_type_id || null,
    supervisor_id: store.dialog.data?.supervisor_id || null,
+   status: store.dialog.data?.user.status || null,
    principal: store.dialog.data?.principal || null,
    address: store.dialog.data?.address || null,
    confirm_password: null
@@ -206,6 +228,7 @@ const validator = yup.object({
    }),
    school_type_id: yup.number().typeError('Tipe sekolah harus diisi').required('Tipe sekolah harus diisi'),
    supervisor_id: yup.number().typeError('Pengawas harus diisi').required('Pengawas harus diisi'),
+   status: yup.string().required('Status harus diisi'),
    principal: yup.string().notRequired(),
    address: yup.string().notRequired(),
 })
