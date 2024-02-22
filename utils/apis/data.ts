@@ -1,15 +1,15 @@
 export async function getData (payload: API.Request.Query.Data) : Promise <Util.LaravelPagination<Model.Data[]>> {
-   const response = await $api ('/data', {
+   const response = await $api <API.Response<Util.LaravelPagination<Model.Data[]>>> ('/data', {
       method: 'GET',
       query: payload
-   }) as API.Response<Util.LaravelPagination<Model.Data[]>>
+   })
    return response.data
 }
 
 export async function getSingleData (id: number) : Promise <Model.Data> {
-   const response = await $api (`/data/${id}`, {
+   const response = await $api <API.Response <Model.Data>> (`/data/${id}`, {
       method: 'GET',
-   }) as API.Response <Model.Data>
+   })
    return response.data
 }
 
@@ -19,18 +19,18 @@ export async function createData (payload: API.Request.Form.Data) : Promise <Mod
       form.append(i, payload[i] as string | Blob)
    }
 
-   const response = await $api ('/data', {
+   const response = await $api <API.Response <Model.Data>> ('/data', {
       method: 'POST',
       body: form
-   }) as API.Response <Model.Data>
+   })
    return response.data
 }
 
 export async function updateData (dataId: number, payload: API.Request.Form.Data) : Promise <string> {
-   const response = await $api (`/data/${dataId}`, {
+   const response = await $api <API.Response <boolean>> (`/data/${dataId}`, {
       method: 'PUT',
       body: payload
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
 
@@ -38,30 +38,30 @@ export async function updateFile (dataId: number, payload: Pick <API.Request.For
    const form = new FormData()
    form.append('file', payload.file as Blob)
 
-   const response = await $api (`/data/file/${dataId}`, {
+   const response = await $api <API.Response <boolean>> (`/data/file/${dataId}`, {
       method: 'POST',
       body: form
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
 
 export async function deleteData (dataId: number) : Promise <string> {
-   const response = await $api (`/data/${dataId}`, {
+   const response = await $api <API.Response <boolean>> (`/data/${dataId}`, {
       method: 'DELETE',
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
 
 export async function downloadFile (data: Model.Data) : Promise <boolean> {
    try {
-      const response = await $api ('/data/download', {
+      const response = await $api <Blob> ('/data/download', {
          method: 'POST',
          body: {
             id: data.id
          }
-      }) as Blob | API.Response <null>
+      })
 
-      const url = window.URL.createObjectURL(response as Blob)
+      const url = window.URL.createObjectURL(response)
       const a = document.createElement('a')
       const filename = `${data.school.user!.name}_${data.type.category!.name}_${data.type.name}_${data.year}`
       a.href = url

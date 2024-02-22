@@ -1,10 +1,18 @@
-export const $api = async (url: string, opts?: any) : Promise <unknown> => {
-   const data = await $fetch (url, {
+type Options = {
+   method: 'get' | 'post' | 'put' | 'delete' | 'GET' | 'POST' | 'PUT' | 'DELETE',
+   headers?: Wildcard,
+   params?: Wildcard,
+   query?: Wildcard,
+   body?: Wildcard
+}
+
+export const $api = async <T> (url: string, opts?: Options) : Promise <T> => {
+   const data = await $fetch <T> (url, {
       baseURL: useRuntimeConfig().public.apiBaseUrl as string,
       ...opts,
 
-      async onRequest({ options }: any) {
-         const headers : { [key: string]: any } = {
+      async onRequest({ options }) {
+         const headers : Wildcard = {
             ...options.headers,
             Accept: 'application/json',
          }
@@ -14,15 +22,15 @@ export const $api = async (url: string, opts?: any) : Promise <unknown> => {
          options.headers = headers
       },
 
-      async onRequestError({ error }: any) {
+      async onRequestError({ error }) {
          useAppStore().notify('error', `${error.message}`, 'api-request-error')
       },
 
-      async onResponse({ response }: any) {
+      async onResponse({ response }) {
          return response._data
       },
 
-      async onResponseError({ response }: any) {
+      async onResponseError({ response }) {
          const { status, _data } = response
 
          if (status === 403) {
@@ -40,7 +48,7 @@ export const $api = async (url: string, opts?: any) : Promise <unknown> => {
             navigateTo('/login')
          }
 
-         throw Error(message)
+         useAppStore().notify('error', `${status}: ${_data.message}`)
       }
    })
 

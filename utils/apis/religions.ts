@@ -1,30 +1,30 @@
 export async function getReligions (payload?: API.Request.Query.Religion) : Promise <Util.Religion[] | Util.LaravelPagination <Util.Religion[]>> {
-   const response = await $api('/religions', {
+   const response = await $api <API.Response <Util.Religion[] | Util.LaravelPagination <Util.Religion[]>>> ('/religions', {
       method: 'GET',
       query: payload
-   }) as API.Response <Util.Religion[] | Util.LaravelPagination <Util.Religion[]>>
+   })
    return response.data
 }
 
 export async function createReligion (payload: API.Request.Form.Religion) : Promise <Util.Religion> {
-   const response = await $api ('/religion', {
+   const response = await $api <API.Response <Util.Religion>> ('/religion', {
       method: 'POST',
       body: payload
-   }) as API.Response <Util.Religion>
+   })
    return response.data
 }
 
 export async function updateReligion (id: number, payload: API.Request.Form.Religion) : Promise <string> {
-   const response = await $api (`/religion/${id}`, {
+   const response = await $api <API.Response <boolean>> (`/religion/${id}`, {
       method: 'PUT',
       body: payload
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
 
 export async function deleteReligion (id: number) : Promise <string> {
-   const response = await $api (`/religion/${id}`, {
+   const response = await $api <API.Response <boolean>> (`/religion/${id}`, {
       method: 'DELETE',
-   }) as API.Response <boolean>
+   })
    return response.message!
 }

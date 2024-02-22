@@ -1,30 +1,30 @@
 export async function getDataStatus (payload: API.Request.Query.DataStatus) : Promise <Model.Data.Status[] | Util.LaravelPagination <Model.Data.Status[]>> {
-   const response = await $api ('/data-statuses', {
+   const response = await $api <API.Response <Model.Data.Status[] | Util.LaravelPagination <Model.Data.Status[]>>> ('/data-statuses', {
       method: 'GET',
       query: payload
-   }) as API.Response <Model.Data.Status[] | Util.LaravelPagination <Model.Data.Status[]>>
+   })
    return response.data
 }
 
 export async function createDataStatus (payload: API.Request.Form.DataStatus) : Promise <Model.Data.Status> {
-   const response = await $api ('/data-status', {
+   const response = await $api <API.Response <Model.Data.Status>> ('/data-status', {
       method: 'POST',
       body: payload
-   }) as API.Response <Model.Data.Status>
+   })
    return response.data
 }
 
 export async function updateDataStatus (id: number, payload: API.Request.Form.DataStatus) : Promise <string> {
-   const response = await $api (`/data-status/${id}`, {
+   const response = await $api <API.Response <boolean>> (`/data-status/${id}`, {
       method: 'PUT',
       body: payload
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
 
 export async function deleteDataStatus (id: number) : Promise <string> {
-   const response = await $api (`data-status/${id}`, {
+   const response = await $api <API.Response <boolean>> (`data-status/${id}`, {
       method: 'DELETE',
-   }) as API.Response <boolean>
+   })
    return response.message!
 }
