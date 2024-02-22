@@ -16,10 +16,6 @@ export default defineNuxtConfig({
             { name: "format-detection", content: "telephone=no" },
             { charset: "utf-8" },
          ],
-         link: [
-            { rel: 'preconnect', href: 'ttps://fonts.bunny.net' },
-            { rel: 'stylesheet', href: 'https://fonts.bunny.net/css?family=lato:100,100i,300,300i,400,400i,700,700i,900,900i' }
-         ]
       },
    },
 
