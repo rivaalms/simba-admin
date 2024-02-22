@@ -5,50 +5,15 @@
       :rows="rows"
       :total="dataLength"
       :loading="loading"
+      filterable
+      :filter-count="filterCount"
       @fetch="onTableEmit"
    >
-      <template #filters>
-         <div class="grid grid-cols-12 gap-4">
-            <!-- SECTION: Name -->
-            <u-form-group
-               class="col-span-3"
-               label="Cari"
-            >
-               <u-button-group class="w-full">
-                  <u-input
-                     v-model="(filter.search as string)"
-                     placeholder="Cari nama/email/kepala sekolah..."
-                     class="flex-1"
-                     input-class="focus:ring-inset"
-                     @keyup.enter="fetchSchools()"
-                  ></u-input>
-
-                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
-                     <u-button
-                        color="white"
-                        icon="i-heroicons-x-mark"
-                        class="rounded-none"
-                        @click.stop="async () => {
-                           filter.search = null
-                           await fetchSchools()
-                        }"
-                     ></u-button>
-                  </u-tooltip>
-
-                  <u-button
-                     color="white"
-                     icon="i-heroicons-magnifying-glass"
-                     @click.stop="fetchSchools()"
-                  >
-                     Cari
-                  </u-button>
-               </u-button-group>
-            </u-form-group>
-            <!-- !SECTION -->
-
+      <template #filter>
+         <div class="p-4 grid gap-4">
             <!-- SECTION: Type -->
             <u-form-group
-               class="col-span-2"
+               class=""
                label="Tipe"
             >
                <u-button-group class="w-full">
@@ -93,7 +58,7 @@
 
             <!-- SECTION: Supervisor -->
             <u-form-group
-               class="col-span-2"
+               class=""
                label="Pengawas"
             >
                <u-button-group class="w-full">
@@ -135,17 +100,49 @@
                </u-button-group>
             </u-form-group>
             <!-- !SECTION -->
+         </div>
+      </template>
 
-            <!-- SECTION: Add Button -->
-            <div class="col-span-2 col-end-13 flex items-end justify-end">
+      <template #header>
+         <div class="flex-1 flex justify-between items-center gap-4">
+            <!-- SECTION: Name -->
+            <u-button-group>
+               <u-input
+                  v-model="(filter.search as string)"
+                  placeholder="Cari nama/email/kepala sekolah..."
+                  class="flex-1"
+                  input-class="focus:ring-inset"
+                  @keyup.enter="fetchSchools()"
+               ></u-input>
+
+               <u-tooltip v-if="!!filter.search" text="Hapus filter">
+                  <u-button
+                     color="white"
+                     icon="i-heroicons-x-mark"
+                     class="rounded-none"
+                     @click.stop="async () => {
+                        filter.search = null
+                        await fetchSchools()
+                     }"
+                  ></u-button>
+               </u-tooltip>
+
                <u-button
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('school-create', 'Tambah Sekolah', null, () => fetchSchools())"
+                  color="white"
+                  icon="i-heroicons-magnifying-glass"
+                  @click.stop="fetchSchools()"
                >
-                  Tambah Sekolah
+                  Cari
                </u-button>
-            </div>
+            </u-button-group>
             <!-- !SECTION -->
+
+            <u-button
+               icon="i-heroicons-plus"
+               @click.stop="store.showDialog('school-create', 'Tambah Sekolah', null, () => fetchSchools())"
+            >
+               Tambah Sekolah
+            </u-button>
          </div>
       </template>
 
@@ -202,6 +199,11 @@ const filter : Ref <API.Request.Query.School> = ref({
    supervisor: null,
    type: null,
    per_page: 10,
+})
+const filterCount = computed(() => {
+   const { per_page, page, search, ...rest } = filter.value
+   const count = Object.values(rest).filter((i: any) => !!i).length
+   return count
 })
 
 const supervisorOptions : Ref <Util.SelectOption[]> = ref([])

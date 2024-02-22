@@ -7,51 +7,44 @@
       :loading="loading"
       @fetch="onTableEmit"
    >
-      <template #filters>
-         <div class="grid grid-cols-12 gap-4">
-            <u-form-group
-               class="col-span-3"
-               label="Cari"
-            >
-               <u-button-group class="w-full">
-                  <u-input
-                     v-model="(filter.search as string)"
-                     placeholder="Cari nama/email/NIP..."
-                     class="flex-1"
-                     input-class="focus:ring-inset"
-                     @keydown.enter="fetchOfficers()"
-                  ></u-input>
+      <template #header>
+         <div class="flex-1 flex justify-between items-center gap-4">
+            <u-button-group>
+               <u-input
+                  v-model="(filter.search as string)"
+                  placeholder="Cari nama/email/NIP..."
+                  class="flex-1"
+                  input-class="focus:ring-inset"
+                  @keydown.enter="fetchOfficers()"
+               ></u-input>
 
-                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
-                     <u-button
-                        color="white"
-                        icon="i-heroicons-x-mark"
-                        class="rounded-none"
-                        @click.stop="async () => {
-                           filter.search = null
-                           await fetchOfficers()
-                        }"
-                     ></u-button>
-                  </u-tooltip>
-
+               <u-tooltip v-if="!!filter.search" text="Hapus filter">
                   <u-button
                      color="white"
-                     icon="i-heroicons-magnifying-glass"
-                     @click.stop="fetchOfficers()"
-                  >
-                     Cari
-                  </u-button>
-               </u-button-group>
-            </u-form-group>
+                     icon="i-heroicons-x-mark"
+                     class="rounded-none"
+                     @click.stop="async () => {
+                        filter.search = null
+                        await fetchOfficers()
+                     }"
+                  ></u-button>
+               </u-tooltip>
 
-            <div class="col-span-2 col-end-13 flex items-end justify-end">
                <u-button
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('officer-create', 'Tambah Diknas', null, () => fetchOfficers())"
+                  color="white"
+                  icon="i-heroicons-magnifying-glass"
+                  @click.stop="fetchOfficers()"
                >
-                  Tambah Diknas
+                  Cari
                </u-button>
-            </div>
+            </u-button-group>
+
+            <u-button
+               icon="i-heroicons-plus"
+               @click.stop="store.showDialog('officer-create', 'Tambah Diknas', null, () => fetchOfficers())"
+            >
+               Tambah Diknas
+            </u-button>
          </div>
       </template>
 

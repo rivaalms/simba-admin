@@ -5,14 +5,13 @@
       :rows="rows"
       :total="dataLength"
       :loading="loading"
+      filterable
+      :filter-count="filterCount"
       @fetch="onTableEmit"
    >
-      <template #filters>
-         <!-- SECTION: Filters -->
-         <div class="grid grid-cols-12 gap-4">
-            <!-- SECTION: School -->
+      <template #filter>
+         <div class="p-4 grid gap-4">
             <u-form-group
-               class="col-span-2"
                label="Sekolah"
             >
                <u-button-group class="w-full">
@@ -27,17 +26,8 @@
                      @update:model-value="fetchData()"
                   >
                      <template #label>
-                        <span class="">
+                        <span>
                            {{ schoolOptions.find(item => item.value === filter.school)?.label || 'Pilih sekolah...' }}
-                        </span>
-                     </template>
-
-                     <template #option="{ option: school }">
-                        <span v-if="school.value === null" class="text-gray-500 font-light truncate">
-                           {{ school.label }}
-                        </span>
-                        <span v-else class="truncate">
-                           {{ school.label }}
                         </span>
                      </template>
                   </u-select-menu>
@@ -55,13 +45,8 @@
                   </u-tooltip>
                </u-button-group>
             </u-form-group>
-            <!-- !SECTION -->
 
-            <!-- SECTION: Category -->
-            <u-form-group
-               class="col-span-2"
-               label="Kategori"
-            >
+            <u-form-group label="Kategori">
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.category as number)"
@@ -79,15 +64,6 @@
                      <template #label>
                         {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
                      </template>
-
-                     <template #option="{ option: category }">
-                        <span v-if="category.value === null" class="text-gray-500 font-light truncate">
-                           {{ category.label }}
-                        </span>
-                        <span v-else class="truncate">
-                           {{ category.label }}
-                        </span>
-                     </template>
                   </u-select-menu>
 
                   <u-tooltip v-if="!!filter.category" text="Hapus filter">
@@ -103,13 +79,8 @@
                   </u-tooltip>
                </u-button-group>
             </u-form-group>
-            <!-- !SECTION -->
 
-            <!-- SECTION: Type -->
-            <u-form-group
-               class="col-span-2"
-               label="Tipe"
-            >
+            <u-form-group label="Tipe">
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.type as number)"
@@ -123,7 +94,7 @@
                      @update:model-value="fetchData()"
                   >
                      <template #label>
-                        <template v-if="filter.category === null">
+                        <template v-if="!filter.category">
                            <span class="text-gray-500 truncate">
                               Kategori belum dipilih
                            </span>
@@ -131,15 +102,6 @@
                         <template v-else>
                            {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
                         </template>
-                     </template>
-
-                     <template #option="{ option: type }">
-                        <span v-if="type.value === null" class="text-gray-500 font-light truncate">
-                           {{ type.label }}
-                        </span>
-                        <span v-else class="truncate">
-                           {{ type.label }}
-                        </span>
                      </template>
                   </u-select-menu>
 
@@ -156,52 +118,42 @@
                   </u-tooltip>
                </u-button-group>
             </u-form-group>
-            <!-- !SECTION -->
 
-            <!-- SECTION: Year -->
-            <u-form-group
-               class="col-span-2"
-               label="Tahun Ajaran"
-            >
-            <u-button-group class="w-full">
-               <date-picker
-                  v-model="yearPicker"
-                  :mode="['year-picker']"
-                  @update:model-value="async (val) => {
-                     yearPicker = val
-                     filter.year = `${parseInt(val)}-${parseInt(val) + 1}`
-                     await fetchData()
-                  }"
-               >
-                  <u-input
-                     v-model="(filter.year as string)"
-                     :input-class="`cursor-pointer focus:ring-inset ${!!filter.year ? 'rounded-e-none' : ''}`"
-                     placeholder="Pilih tahun ajaran..."
-                     readonly
-                     icon="i-heroicons-calendar-days"
-                  ></u-input>
-               </date-picker>
-
-               <u-tooltip v-if="!!filter.year" text="Hapus filter">
-                  <u-button
-                     color="white"
-                     icon="i-heroicons-x-mark"
-                     class="rounded-s-none"
-                     @click.stop="async () => {
-                        filter.year = null
+            <u-form-group label="Tahun ajaran">
+               <u-button-group class="w-full">
+                  <date-picker
+                     v-model="yearPicker"
+                     :mode="['year-picker']"
+                     @update:model-value="async (val) => {
+                        yearPicker = val
+                        filter.year = `${parseInt(val)}-${parseInt(val) + 1}`
                         await fetchData()
                      }"
-                  ></u-button>
-               </u-tooltip>
-            </u-button-group>
-            </u-form-group>
-            <!-- !SECTION -->
+                  >
+                     <u-input
+                        v-model="(filter.year as string)"
+                        :input-class="`cursor-pointer focus:ring-inset ${!!filter.year ? 'rounded-e-none' : ''}`"
+                        placeholder="Pilih tahun ajaran..."
+                        readonly
+                        icon="i-heroicons-calendar-days"
+                     ></u-input>
+                  </date-picker>
 
-            <!-- SECTION: Status -->
-            <u-form-group
-               class="col-span-2"
-               label="Status"
-            >
+                  <u-tooltip v-if="!!filter.year" text="Hapus filter">
+                     <u-button
+                        color="white"
+                        icon="i-heroicons-x-mark"
+                        class="rounded-s-none"
+                        @click.stop="async () => {
+                           filter.year = null
+                           await fetchData()
+                        }"
+                     ></u-button>
+                  </u-tooltip>
+               </u-button-group>
+            </u-form-group>
+
+            <u-form-group label="Status">
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.status as number)"
@@ -224,19 +176,12 @@
                      </template>
 
                      <template #option="{ option: status }">
-                        <template v-if="status.value === null">
-                           <span class="text-gray-500 font-light truncate">
-                              {{ status.label }}
-                           </span>
-                        </template>
-                        <template v-else>
-                           <span
-                              class="inline-block h-2 w-2 flex-shrink-0 rounded-full"
-                              :class="statusOptionColor(status.value)"
-                              aria-hidden="true"
-                           ></span>
-                           <span class="truncate">{{ status.label }}</span>
-                        </template>
+                        <span
+                           class="inline-block h-2 w-2 flex-shrink-0 rounded-full"
+                           :class="statusOptionColor(status.value)"
+                           aria-hidden="true"
+                        ></span>
+                        <span class="truncate">{{ status.label }}</span>
                      </template>
                   </u-select-menu>
 
@@ -253,20 +198,16 @@
                   </u-tooltip>
                </u-button-group>
             </u-form-group>
-            <!-- !SECTION -->
-
-            <!-- SECTION: Add Button -->
-            <div class="col-span-2 flex items-end justify-end">
-               <u-button
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData())"
-               >
-                  Tambah Data
-               </u-button>
-            </div>
-            <!-- !SECTION -->
          </div>
-         <!-- !SECTION -->
+      </template>
+
+      <template #header>
+         <u-button
+            icon="i-heroicons-plus"
+            @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData())"
+         >
+            Tambah Data
+         </u-button>
       </template>
 
       <template #status="{ row }">
@@ -324,6 +265,12 @@ const filter : Ref <API.Request.Query.Data> = ref({
    per_page: 10,
    page: 1
 })
+const filterCount = computed(() => {
+   const { page, per_page, ...rest } = filter.value
+   const count = Object.values(rest).filter((r: any) => !!r).length
+   return count
+})
+
 const yearPicker : Ref <string> = ref((useDayjs())().format('YYYY'))
 
 const schoolOptions : Ref <Util.SelectOption[]> = ref([])

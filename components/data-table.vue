@@ -1,6 +1,30 @@
 <template>
 <div class="grid grid-cols-1 gap-4">
-   <slot name="filters"></slot>
+   <div class="flex items-center justify-between gap-4">
+      <div v-if="props.filterable" class="">
+         <u-popover
+            overlay
+            :ui="popperUi"
+         >
+            <u-chip :show="props.filterCount > 0" size="xl" :text="filterCount || ''">
+               <u-button
+                  color="white"
+                  label="Filter"
+               >
+                  <template #leading>
+                     <u-icon name="i-heroicons-funnel"></u-icon>
+                  </template>
+               </u-button>
+            </u-chip>
+
+            <template #panel>
+               <slot name="filter"/>
+            </template>
+         </u-popover>
+      </div>
+
+      <slot name="header" />
+   </div>
 
    <u-table
       :columns="props.columns"
@@ -61,10 +85,14 @@ type Props = {
    total: number
    loading: boolean
    pagination?: boolean
+   filterCount?: number
+   filterable?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-   pagination: true
+   pagination: true,
+   filterCount: 0,
+   filterable: false
 })
 
 const emit = defineEmits(['fetch'])
@@ -79,4 +107,11 @@ const onEmit = () => {
       per_page: perPage.value
    })
 }
+
+const popperUi = computed(() => ({
+   base: 'overflow-visible',
+   overlay: {
+      background: 'bg-gray-100/75'
+   }
+}))
 </script>

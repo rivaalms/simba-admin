@@ -8,50 +8,44 @@
       :total="dataLength"
       @fetch="onTableEmit"
    >
-      <template #filters>
-         <div class="grid grid-cols-12 gap-4">
-            <u-form-group
-               class="col-span-3"
-               label="Cari"
-            >
-               <u-button-group class="w-full">
-                  <u-input
-                     v-model="(filter.search as string)"
-                     placeholder="Cari kategori data..."
-                     class="flex-1"
-                     input-class="focus:ring-inset"
-                     @keyup.enter="fetchTypes"
-                  ></u-input>
+      <template #header>
+         <div class="flex-1 flex justify-between items-center gap-4">
+            <u-button-group>
+               <u-input
+                  v-model="(filter.search as string)"
+                  placeholder="Cari kategori data..."
+                  class="flex-1"
+                  input-class="focus:ring-inset"
+                  @keyup.enter="fetchTypes"
+               ></u-input>
 
-                  <u-tooltip v-if="!!filter.search" text="Hapus filter">
-                     <u-button
-                        color="white"
-                        icon="i-heroicons-x-mark"
-                        class="rounded-none"
-                        @click.stop="async () => {
-                           filter.search = null
-                           await fetchTypes()
-                        }"
-                     ></u-button>
-                  </u-tooltip>
-
+               <u-tooltip v-if="!!filter.search" text="Hapus filter">
                   <u-button
                      color="white"
-                     icon="i-heroicons-magnifying-glass"
-                     @click.stop="fetchTypes()"
-                  >
-                     Cari
-                  </u-button>
-               </u-button-group>
-            </u-form-group>
-            <div class="col-span-1 flex items-end justify-end col-end-13">
+                     icon="i-heroicons-x-mark"
+                     class="rounded-none"
+                     @click.stop="async () => {
+                        filter.search = null
+                        await fetchTypes()
+                     }"
+                  ></u-button>
+               </u-tooltip>
+
                <u-button
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('school-type-create', 'Tambah Tipe Sekolah', null, () => fetchTypes())"
+                  color="white"
+                  icon="i-heroicons-magnifying-glass"
+                  @click.stop="fetchTypes()"
                >
-                  Tambah
+                  Cari
                </u-button>
-            </div>
+            </u-button-group>
+
+            <u-button
+               icon="i-heroicons-plus"
+               @click.stop="store.showDialog('school-type-create', 'Tambah Tipe Sekolah', null, () => fetchTypes())"
+            >
+               Tambah
+            </u-button>
          </div>
       </template>
 

@@ -8,13 +8,10 @@
       :total="dataLength"
       @fetch="onTableEmit"
    >
-      <template #filters>
-         <div class="grid grid-cols-12 gap-4">
-            <u-form-group
-               class="col-span-3"
-               label="Cari"
-            >
-               <u-button-group class="w-full">
+      <template #header>
+         <div class="flex-1 flex justify-between items-center gap-4">
+            <div class="flex items-center gap-4">
+               <u-button-group>
                   <u-input
                      v-model="(filter.search as string)"
                      placeholder="Cari kategori data..."
@@ -43,12 +40,8 @@
                      Cari
                   </u-button>
                </u-button-group>
-            </u-form-group>
-            <u-form-group
-               class="col-span-3"
-               label="Kategori"
-            >
-               <u-button-group class="w-full">
+
+               <u-button-group>
                   <u-select-menu
                      v-model="(filter.category as number)"
                      :options="categoryOptions"
@@ -61,15 +54,6 @@
                   >
                      <template #label>
                         {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
-                     </template>
-
-                     <template #option="{ option: category }">
-                        <span v-if="category.value === null" class="text-gray-500 font-light truncate">
-                           {{ category.label }}
-                        </span>
-                        <span v-else class="truncate">
-                           {{ category.label }}
-                        </span>
                      </template>
                   </u-select-menu>
 
@@ -85,15 +69,14 @@
                      ></u-button>
                   </u-tooltip>
                </u-button-group>
-            </u-form-group>
-            <div class="col-span-1 flex items-end justify-end col-end-13">
-               <u-button
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('data-type-create', 'Tambah Tipe Data', null, () => fetchTypes())"
-               >
-                  Tambah
-               </u-button>
             </div>
+
+            <u-button
+               icon="i-heroicons-plus"
+               @click.stop="store.showDialog('data-type-create', 'Tambah Tipe Data', null, () => fetchTypes())"
+            >
+               Tambah
+            </u-button>
          </div>
       </template>
 
