@@ -129,6 +129,7 @@
 
                <u-button
                   color="white"
+                  class="rounded-e-md"
                   icon="i-heroicons-magnifying-glass"
                   @click.stop="fetchSchools()"
                >
@@ -191,23 +192,46 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
    { key: 'actions', label: '' }
 ])
 
-const rows : Ref <Model.School[]> = ref([])
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.School> = ref({
    search: null,
    supervisor: null,
    type: null,
    per_page: 10,
 })
+
+const { data: rows, pending: loading, refresh: fetchSchools } = await useLazyAsyncData(
+   'fetch-schools',
+   () => getSchools(filter.value),
+   {
+      transform: (resp) => {
+         dataLength.value = resp.total
+         return resp.data
+      },
+      default: () => []
+   }
+)
+
 const filterCount = computed(() => {
    const { per_page, page, search, ...rest } = filter.value
    const count = Object.values(rest).filter((i: any) => !!i).length
    return count
 })
 
-const supervisorOptions : Ref <Util.SelectOption[]> = ref([])
-const typeOptions : Ref <Util.SelectOption[]> = ref([])
+const { data: supervisorOptions } = await useLazyAsyncData(
+   'fetch-supervisor-options',
+   () => getSupervisorOptions(),
+   {
+      default: () => []
+   }
+)
+const { data: typeOptions } = await useLazyAsyncData(
+   'fetch-type-options',
+   () => getSchoolTypeOptions(),
+   {
+      default: () => []
+   }
+)
 
 const actionMenu = (row: Model.Data) => ([
    [
@@ -231,30 +255,6 @@ const actionMenu = (row: Model.Data) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchSchools()
-
-   await getSupervisorOptions()
-      .then(resp => {
-         supervisorOptions.value = resp
-      })
-
-   await getSchoolTypeOptions()
-      .then(resp => {
-         typeOptions.value = resp
-      })
-})
-
-const fetchSchools = async () => {
-   loading.value = true
-   await getSchools(filter.value)
-      .then(resp => {
-         rows.value = resp.data
-         dataLength.value = resp.total
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

@@ -34,6 +34,7 @@
 
                   <u-button
                      color="white"
+                     class="rounded-e-md"
                      icon="i-heroicons-magnifying-glass"
                      @click.stop="fetchTypes()"
                   >
@@ -105,7 +106,6 @@ const store = useAppStore()
 
 store.setPageTitle('Tipe Data')
 
-const rows : Ref <Model.Data.Type[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
@@ -115,14 +115,33 @@ const columns = [
 ]
 
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.DataType> = ref({
    search: null,
    category: null,
    per_page: 10,
    page: 1
 })
-const categoryOptions : Ref <Util.SelectOption[]> = ref([])
+
+const { data: rows, pending: loading, refresh: fetchTypes } = await useLazyAsyncData(
+   'fetch-types',
+   () => getDataTypes(filter.value),
+   {
+      transform: (resp) => {
+         const data = resp as Util.LaravelPagination<Model.Data.Type[]>
+         dataLength.value = data.total
+         return data.data
+      },
+      default: () => [] as Model.Data.Type[]
+   }
+)
+
+const { data: categoryOptions } = await useLazyAsyncData(
+   'fetch-category-options',
+   () => getDataCategoryOptions(),
+   {
+      default: () => [] as Util.SelectOption[]
+   }
+)
 
 const actionMenu = (row: Model.Data.Category) => ([
    [
@@ -141,25 +160,6 @@ const actionMenu = (row: Model.Data.Category) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchTypes()
-
-   await getDataCategoryOptions()
-      .then(resp => {
-         categoryOptions.value = resp
-      })
-})
-
-const fetchTypes = async () => {
-   loading.value = true
-   await getDataTypes(filter.value)
-      .then(resp => {
-         rows.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).data || resp as Model.Data.Type[]
-         dataLength.value = (resp as Util.LaravelPagination<Model.Data.Type[]>).total || 0
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

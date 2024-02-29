@@ -32,6 +32,7 @@
 
                <u-button
                   color="white"
+                  class="rounded-e-md"
                   icon="i-heroicons-magnifying-glass"
                   @click.stop="fetchOfficers()"
                >
@@ -81,14 +82,24 @@ const columns : ComputedRef <Util.TableColumns[]> = computed(() => [
    { key: 'actions', label: '' },
 ])
 
-const rows : Ref <Model.Officer[]> = ref([])
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.Officer> = ref({
    search: null,
    page: 1,
    per_page: 10
 })
+
+const { data: rows, pending: loading, refresh: fetchOfficers } = await useLazyAsyncData(
+   'fetch-officers',
+   () => getOfficers(filter.value),
+   {
+      transform: (resp) => {
+         dataLength.value = resp.total
+         return resp.data
+      },
+      default: () => [] as Model.Officer[]
+   }
+)
 
 const actionMenu = (row: Model.Supervisor) => ([
    [
@@ -116,16 +127,6 @@ const actionMenu = (row: Model.Supervisor) => ([
 onBeforeMount(async () => {
    await fetchOfficers()
 })
-
-const fetchOfficers = async () => {
-   loading.value = true
-   await getOfficers(filter.value)
-      .then(resp => {
-         rows.value = resp.data
-         dataLength.value = resp.total
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

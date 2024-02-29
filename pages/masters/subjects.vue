@@ -33,6 +33,7 @@
 
                <u-button
                   color="white"
+                  class="rounded-e-md"
                   icon="i-heroicons-magnifying-glass"
                   @click.stop="fetchSubjects()"
                >
@@ -74,7 +75,6 @@ const store = useAppStore()
 
 store.setPageTitle('Mata Pelajaran')
 
-const rows : Ref <Util.Subject[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
@@ -84,12 +84,24 @@ const columns = [
 ]
 
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.Subject> = ref({
    search: null,
    page: 1,
    per_page: 10
 })
+
+const { data: rows, pending: loading, refresh: fetchSubjects } = await useLazyAsyncData(
+   'fetch-subjects',
+   () => getSubjects(filter.value),
+   {
+      transform: (resp) => {
+         const data = resp as Util.LaravelPagination<Util.Subject[]>
+         dataLength.value = data.total
+         return data.data
+      },
+      default: () => [] as Util.Subject[]
+   }
+)
 
 const actionMenu = (row: Util.Subject) => ([
    [
@@ -108,20 +120,6 @@ const actionMenu = (row: Util.Subject) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchSubjects()
-})
-
-const fetchSubjects = async () => {
-   loading.value = true
-   await getSubjects(filter.value)
-      .then(resp => {
-         rows.value = (resp as Util.LaravelPagination <Util.Subject[]>).data || resp as Util.Subject[]
-         dataLength.value = (resp as Util.LaravelPagination <Util.Subject[]>).data ? (resp as Util.LaravelPagination <Util.Subject[]>).total : 0
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

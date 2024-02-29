@@ -33,6 +33,7 @@
 
                <u-button
                   color="white"
+                  class="rounded-e-md"
                   icon="i-heroicons-magnifying-glass"
                   @click.stop="fetchStatus()"
                >
@@ -74,7 +75,6 @@ const store = useAppStore()
 
 store.setPageTitle('Status Data')
 
-const rows : Ref <Model.Data.Status[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
@@ -83,10 +83,22 @@ const columns = [
 ]
 
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.DataStatus> = ref({
    search: null
 })
+
+const { data: rows, pending: loading, refresh: fetchStatus } = await useLazyAsyncData(
+   'fetch-status',
+   () => getDataStatus(filter.value),
+   {
+      transform: (resp) => {
+         const data = resp as Util.LaravelPagination<Model.Data.Status[]>
+         dataLength.value = data.total
+         return data.data
+      },
+      default: () => [] as Model.Data.Status[]
+   }
+)
 
 const actionMenu = (row: Model.Data.Status) => ([
    [
@@ -105,20 +117,6 @@ const actionMenu = (row: Model.Data.Status) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchStatus()
-})
-
-const fetchStatus = async () => {
-   loading.value = true
-   await getDataStatus(filter.value)
-      .then(resp => {
-         rows.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).data || resp as Model.Data.Status[]
-         dataLength.value = (resp as Util.LaravelPagination <Model.Data.Status[]>).total || 0
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

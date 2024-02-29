@@ -74,7 +74,6 @@ const store = useAppStore()
 
 store.setPageTitle('Agama')
 
-const rows : Ref <Util.Religion[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
@@ -83,12 +82,24 @@ const columns = [
 ]
 
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.Religion> = ref({
    search: null,
    page: 1,
    per_page: 10
 })
+
+const { data: rows, pending: loading, refresh: fetchReligions } = await useLazyAsyncData(
+   'fetch-religions',
+   () => getReligions(filter.value),
+   {
+      transform: (resp) => {
+         const data = resp as Util.LaravelPagination<Util.Religion[]>
+         dataLength.value = data.total
+         return data.data
+      },
+      default: () => [] as Util.Religion[]
+   }
+)
 
 const actionMenu = (row: Util.Religion) => ([
    [
@@ -107,20 +118,6 @@ const actionMenu = (row: Util.Religion) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchReligions()
-})
-
-const fetchReligions = async () => {
-   loading.value = true
-   await getReligions(filter.value)
-      .then(resp => {
-         rows.value = (resp as Util.LaravelPagination <Util.Religion[]>).data || resp as Util.Religion[]
-         dataLength.value = (resp as Util.LaravelPagination <Util.Religion[]>).data ? (resp as Util.LaravelPagination <Util.Religion[]>).total : 0
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

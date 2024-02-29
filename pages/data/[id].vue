@@ -13,7 +13,6 @@
                      :options="commentFilterOptions"
                      option-attribute="label"
                      value-attribute="value"
-                     @update:model-value="fetchComments"
                   >
                      <template #label>
                         {{ commentFilterOptions.find(item => item.value === commentFilter.sort)?.label || 'Urutkan komentar...' }}
@@ -26,7 +25,7 @@
          <loading-state v-if="commentLoading"></loading-state>
 
          <div v-else class="grid divide-y">
-            <template v-if="comments.length > 0">
+            <template v-if="comments?.length || 0 > 0">
                <template v-for="comment in comments">
                   <comment-block
                      :comment="comment"
@@ -51,27 +50,23 @@
          <div v-else class="grid gap-4">
             <p>Tulis Komentar</p>
 
-            <u-alert
-               v-if="isReplyingTo"
-               color="cyan"
-               variant="soft"
-               title="Membalas ke:"
-            >
-               <template #title="{ title }">
-                  <div class="flex items-center justify-between gap-x-4">
-                     <span class="flex-grow truncate">{{ title }} <span class="font-semibold">{{ isReplyingTo?.user?.name }}</span></span>
-                     <u-button
-                        icon="i-heroicons-x-mark"
-                        variant="ghost"
-                        color="cyan"
-                        @click.stop="cancelReplying"
-                     ></u-button>
+            <div v-if="isReplyingTo" class="bg-gray-100 ps-6 p-2 relative rounded">
+               <div class="absolute w-2 left-0 inset-y-0 bg-primary-500 rounded-s"></div>
+
+               <div class="flex items-center justify-between gap-4">
+                  <div class="text-sm">
+                     <p class="font-medium">{{ isReplyingTo?.user?.name }}</p>
+                     <p class="text-gray-500">{{ isReplyingTo?.message }}</p>
                   </div>
-               </template>
-               <template #description>
-                  <p class="truncate">{{ isReplyingTo?.message }}</p>
-               </template>
-            </u-alert>
+
+                  <u-button
+                     icon="i-heroicons-x-mark"
+                     variant="ghost"
+                     color="grey"
+                     @click.stop="cancelReplying"
+                  ></u-button>
+               </div>
+            </div>
 
             <u-textarea
                ref="commentInput"
@@ -175,7 +170,7 @@
 
          <nuxt-link v-else :to="`/users/schools/${data?.school_id}`" target="_blank" class="flex items-center gap-4 group/school">
             <u-avatar
-               src="https://avatars.githubusercontent.com/u/739984?v=4"
+               :src="data?.school.user?.profile_picture || `/img/profile.webp`"
                size="2xl"
             ></u-avatar>
             <div class="text-sm">
@@ -199,16 +194,34 @@
 const store = useAppStore()
 const user = useAuthStore().getUser
 const dayjs = useDayjs()
+const paramsId = useRoute().params.id as unknown
 
 store.setPageTitle('Detail Data', '/data')
 
-const dataLoading : Ref <boolean> = ref(false)
-const commentLoading : Ref <boolean> = ref(false)
-const data : Ref <Model.Data | null> = ref(null)
-const comments : Ref <Model.Comment[]> = ref([])
-const commentFilter : Ref <API.Request.Query.Comment> = shallowRef({
+const commentFilter : Ref <API.Request.Query.Comment> = ref({
    sort: 'latest'
 })
+
+const { data, pending: dataLoading, refresh: fetchData } = await useLazyAsyncData(
+   'fetch-data-details',
+   () => getSingleData(paramsId as number)
+)
+
+const { data: comments, pending: commentLoading, execute: fetchComments } = await useLazyAsyncData(
+   'fetch-comments',
+   () => getComments(paramsId as number, commentFilter.value),
+   {
+      transform: (resp) => resp.map(item => ({ ...item, replies_visible: false })),
+      watch: [commentFilter],
+      immediate: false,
+      default: () => []
+   }
+)
+
+watch(dataLoading, async (_new) => {
+   if (_new) await fetchComments()
+})
+
 const commentFilterOptions: ComputedRef <Util.SelectOption[]> = computed(() => [
    {
       label: 'Terbaru',
@@ -220,7 +233,7 @@ const commentFilterOptions: ComputedRef <Util.SelectOption[]> = computed(() => [
    }
 ])
 const commentInput : Ref <any> = ref(null)
-const commentState : Ref <API.Request.Form.Comment> = shallowRef({
+const commentState : Ref <API.Request.Form.Comment> = ref({
    user_id: user?.id || null,
    data_id: null,
    message: null,
@@ -257,38 +270,9 @@ const commentBtnDropdown = () => ([
    ]
 ])
 
-onBeforeMount(async () => {
-   await fetchData()
-   await fetchComments()
-})
-
-const fetchData = async () => {
-   dataLoading.value = true
-   const id : unknown = useRoute().params.id
-
-   await getSingleData(id as number)
-      .then(resp => {
-         data.value = resp
-      })
-      .finally(() => dataLoading.value = false)
-}
-
-const fetchComments = async () => {
-   commentLoading.value = true
-   const id : unknown = useRoute().params.id
-   await getComments(id as number, commentFilter.value)
-      .then(resp => {
-         comments.value = resp.map(item => ({
-            ...item,
-            replies_visible: false
-         }))
-      })
-      .finally(() => commentLoading.value = false)
-}
-
 const replyToComment = (comment: Model.Comment) => {
    if (!comment.reply_to) commentState.value.reply_to = comment.id
-   else commentState.value.reply_to = comments.value.find(item => item.id === comment.reply_to)!.id
+   else commentState.value.reply_to = comments.value!.find(item => item.id === comment.reply_to)!.id
    isReplyingTo.value = comment
    commentInput.value.$refs.textarea.focus()
 }

@@ -1,48 +1,51 @@
 <template>
 <div v-if="school" class="grid grid-cols-3 gap-2">
-   <u-card class="place-self-start overflow-visible">
-      <div class="flex justify-center mb-4">
-         <img src="https://avatars.githubusercontent.com/u/739984?v=4" class="w-2/3 rounded-full object-cover">
-      </div>
-
-      <div class="grid gap-4">
-         <div class="text-center">
-            <p class="font-bold text-lg">{{ school.user?.name }}</p>
-            <p class="text-gray-500">{{ school.user?.email }}</p>
+   <u-card class="place-self-start w-full overflow-visible">
+      <loading-state v-if="loading"></loading-state>
+      <template v-else>
+         <div class="flex justify-center mb-4">
+            <img :src="school.user?.profile_picture || '/img/profile.webp'" class="w-2/3 rounded-full object-cover">
          </div>
 
-         <div class="text-sm">
-            <p class="text-gray-500">Jenis Sekolah</p>
-            <p class="tracking-wide">{{ school.type?.name }}</p>
-         </div>
+         <div class="grid gap-4">
+            <div class="text-center">
+               <p class="font-bold text-lg">{{ school.user?.name }}</p>
+               <p class="text-gray-500">{{ school.user?.email }}</p>
+            </div>
 
-         <div class="text-sm">
-            <p class="text-gray-500">Kepala Sekolah</p>
-            <p class="tracking-wide">{{ school.principal || '-' }}</p>
-         </div>
+            <div class="text-sm">
+               <p class="text-gray-500">Jenis Sekolah</p>
+               <p class="tracking-wide">{{ school.type?.name }}</p>
+            </div>
 
-         <div class="text-sm">
-            <p class="text-gray-500">Alamat</p>
-            <p class="tracking-wide">{{ school.address || '-' }}</p>
-         </div>
+            <div class="text-sm">
+               <p class="text-gray-500">Kepala Sekolah</p>
+               <p class="tracking-wide">{{ school.principal || '-' }}</p>
+            </div>
 
-         <div class="text-sm">
-            <p class="text-gray-500">Pengawas</p>
-            <nuxt-link :to="`/users/supervisors/${school.supervisor_id}`" class="tracking-wide hover:text-primary transition-colors">{{ school.supervisor?.user?.name }} <u-icon name="i-heroicons-arrow-top-right-on-square-20-solid"></u-icon></nuxt-link>
-         </div>
+            <div class="text-sm">
+               <p class="text-gray-500">Alamat</p>
+               <p class="tracking-wide">{{ school.address || '-' }}</p>
+            </div>
 
-         <div class="text-sm">
-            <p class="text-gray-500">Status</p>
-            <u-badge
-               :color="school.user?.status == 'ACTIVE' ? 'emerald' : 'red'"
-               variant="subtle"
-            >
-               {{ school.user?.status }}
-            </u-badge>
-         </div>
-      </div>
+            <div class="text-sm">
+               <p class="text-gray-500">Pengawas</p>
+               <nuxt-link :to="`/users/supervisors/${school.supervisor_id}`" class="tracking-wide hover:text-primary transition-colors">{{ school.supervisor?.user?.name }} <u-icon name="i-heroicons-arrow-top-right-on-square-20-solid"></u-icon></nuxt-link>
+            </div>
 
-      <template #footer>
+            <div class="text-sm">
+               <p class="text-gray-500">Status</p>
+               <u-badge
+                  :color="school.user?.status == 'ACTIVE' ? 'emerald' : 'red'"
+                  variant="subtle"
+               >
+                  {{ school.user?.status }}
+               </u-badge>
+            </div>
+         </div>
+      </template>
+
+      <template #footer v-if="!loading">
          <div class="flex flex-col gap-2">
             <u-button
                block
@@ -174,14 +177,29 @@
 <script setup lang="ts">
 const store = useAppStore()
 const dayjs = useDayjs()
+const schoolId : unknown = useRoute().params.id
 
 store.setPageTitle('Detail Sekolah', '/users/schools')
 
-const loading : Ref <boolean> = ref(false)
-const school : Ref <Model.School | null> = ref(null)
+const { data: school, pending: loading, refresh: fetchSchool } = await useLazyAsyncData(
+   'fetch-data',
+   () => getSchoolDetails(schoolId as number),
+)
 
 const religions = await getReligions() as Util.Religion[]
-const subjects = await getSubjects() as Util.Subject[]
+
+const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
+   school_id: useRoute().params.id as string,
+   year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
+})
+
+const { data: students, refresh: fetchStudents } = await useLazyAsyncData(
+   'fetch-students',
+   () => getSchoolStudents(studentFilter.value).then(async (resp) => await mapStudents(resp, religions)),
+   {
+      default: () => [] as Util.MapStudent[]
+   }
+)
 
 const studentColumns : ComputedRef <Util.TableColumns[]> = computed(() => {
    const religionColumns = religions.map(item => ({
@@ -190,15 +208,10 @@ const studentColumns : ComputedRef <Util.TableColumns[]> = computed(() => {
    }))
 
    return [
-   { key: 'grade', label: 'Kelas' },
-   ...religionColumns,
-   { key: 'total', label: 'Total' },
-]
-})
-const students : Ref <Util.MapStudent[]> = ref([])
-const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
-   school_id: useRoute().params.id as string,
-   year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
+      { key: 'grade', label: 'Kelas' },
+      ...religionColumns,
+      { key: 'total', label: 'Total' },
+   ]
 })
 
 const totalStudents : ComputedRef <number> = computed(() => {
@@ -207,15 +220,25 @@ const totalStudents : ComputedRef <number> = computed(() => {
    }, 0)
 })
 
-const teacherColumns : ComputedRef <any> = computed(() => [
-   { key: 'subject', label: 'Subjek' },
-   { key: 'value', label: 'Jumlah' },
-])
-const teachers : Ref <Util.MapTeacher[]> = ref([])
+const subjects = await getSubjects() as Util.Subject[]
+
 const teacherFilter = shallowRef <API.Request.Query.SchoolTeacher> ({
    school_id: useRoute().params.id as string,
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
+
+const { data: teachers, refresh: fetchTeachers } = await useLazyAsyncData(
+   'fetch-teachers',
+   () => getSchoolTeachers(teacherFilter.value).then(async (resp) => await mapTeachers(resp, subjects)),
+   {
+      default: () => [] as Util.MapTeacher[]
+   }
+)
+
+const teacherColumns : ComputedRef <any> = computed(() => [
+   { key: 'subject', label: 'Subjek' },
+   { key: 'value', label: 'Jumlah' },
+])
 
 const totalTeachers : ComputedRef <number> = computed(() => {
    return teachers.value.reduce((prev, curr) => {
@@ -227,34 +250,4 @@ const yearPicker = ref <{ [key: string]: string }> ({
    student: dayjs().format('YYYY'),
    teacher: dayjs().format('YYYY')
 })
-
-onBeforeMount(async () => {
-   await fetchSchool()
-   await fetchStudents()
-   await fetchTeachers()
-})
-
-const fetchSchool = async () => {
-   const schoolId : unknown = useRoute().params.id
-   loading.value = true
-   await getSchoolDetails(schoolId as number)
-      .then(resp => {
-         school.value = resp
-      })
-      .finally(() => loading.value = false)
-}
-
-const fetchStudents = async () => {
-   await getSchoolStudents(studentFilter.value)
-      .then(async (resp) => {
-         students.value = await mapStudents(resp, religions)
-      })
-}
-
-const fetchTeachers = async () => {
-   await getSchoolTeachers(teacherFilter.value)
-      .then(async (resp) => {
-         teachers.value = await mapTeachers(resp, subjects)
-      })
-}
 </script>

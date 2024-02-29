@@ -33,6 +33,7 @@
 
                <u-button
                   color="white"
+                  class="rounded-e-md"
                   icon="i-heroicons-magnifying-glass"
                   @click.stop="fetchTypes()"
                >
@@ -74,7 +75,6 @@ const store = useAppStore()
 
 store.setPageTitle('Tipe Sekolah')
 
-const rows : Ref <Model.School.Type[]> = ref([])
 const columns = [
    { key: 'id', label: 'ID' },
    { key: 'name', label: 'Nama' },
@@ -83,10 +83,22 @@ const columns = [
 ]
 
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.SchoolType> = ref({
    search: null
 })
+
+const { data: rows, pending: loading, refresh: fetchTypes } = await useLazyAsyncData(
+   'fetch-types',
+   () => getSchoolTypes(filter.value),
+   {
+      transform: (resp) => {
+         const data = resp as Util.LaravelPagination<Model.School.Type[]>
+         dataLength.value = data.total
+         return data.data
+      },
+      default: () => [] as Model.School.Type[]
+   }
+)
 
 const actionMenu = (row: Model.School.Type) => ([
    [
@@ -105,20 +117,6 @@ const actionMenu = (row: Model.School.Type) => ([
       }
    ]
 ])
-
-onBeforeMount(async () => {
-   await fetchTypes()
-})
-
-const fetchTypes = async () => {
-   loading.value = true
-   await getSchoolTypes(filter.value)
-      .then(resp => {
-         rows.value = (resp as Util.LaravelPagination <Model.School.Type[]>).data || resp as Model.School.Type[]
-         dataLength.value = (resp as Util.LaravelPagination <Model.School.Type[]>).total || 0
-      })
-      .finally(() => loading.value = false)
-}
 
 const onTableEmit = async (data: any) => await mapFilters(data, filter.value).then(async (resp) => {
    filter.value = resp

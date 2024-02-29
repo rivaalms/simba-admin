@@ -17,7 +17,7 @@
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.school as number)"
-                     :options="schoolOptions"
+                     :options="schoolOptions || []"
                      value-attribute="value"
                      searchable
                      searchable-placeholder="Cari..."
@@ -27,7 +27,7 @@
                   >
                      <template #label>
                         <span>
-                           {{ schoolOptions.find(item => item.value === filter.school)?.label || 'Pilih sekolah...' }}
+                           {{ schoolOptions?.find(item => item.value === filter.school)?.label || 'Pilih sekolah...' }}
                         </span>
                      </template>
                   </u-select-menu>
@@ -50,7 +50,7 @@
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.category as number)"
-                     :options="categoryOptions"
+                     :options="categoryOptions || []"
                      value-attribute="value"
                      searchable
                      searchable-placeholder="Cari..."
@@ -62,7 +62,7 @@
                      }"
                   >
                      <template #label>
-                        {{ categoryOptions.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
+                        {{ categoryOptions?.find(item => item.value === filter.category)?.label || 'Pilih kategori...' }}
                      </template>
                   </u-select-menu>
 
@@ -84,7 +84,7 @@
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.type as number)"
-                     :options="typeOptions"
+                     :options="typeOptions || []"
                      value-attribute="value"
                      searchable
                      :disabled="(filter.category as number) < 1"
@@ -100,7 +100,7 @@
                            </span>
                         </template>
                         <template v-else>
-                           {{ typeOptions.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
+                           {{ typeOptions?.find(item => item.value === filter.type)?.label || 'Pilih tipe...' }}
                         </template>
                      </template>
                   </u-select-menu>
@@ -157,7 +157,7 @@
                <u-button-group class="w-full">
                   <u-select-menu
                      v-model="(filter.status as number)"
-                     :options="statusOptions"
+                     :options="statusOptions || []"
                      value-attribute="value"
                      searchable
                      searchable-placeholder="Cari..."
@@ -172,7 +172,7 @@
                            :class="statusOptionColor(filter.status as number)"
                            aria-hidden="true"
                         ></span>
-                        {{ statusOptions.find(item => item.value === filter.status)?.label || 'Pilih status...' }}
+                        {{ statusOptions?.find(item => item.value === filter.status)?.label || 'Pilih status...' }}
                      </template>
 
                      <template #option="{ option: status }">
@@ -244,7 +244,6 @@ const store = useAppStore()
 
 store.setPageTitle('Data')
 
-const rows: Ref <Model.Data[]> = ref([])
 const columns = [
    { key: 'school.user.name', label: 'Sekolah' },
    { key: 'type.name', label: 'Tipe' },
@@ -255,7 +254,6 @@ const columns = [
    { key: 'actions', label: '' },
 ]
 const dataLength : Ref <number> = ref(0)
-const loading : Ref <boolean> = ref(false)
 const filter : Ref <API.Request.Query.Data> = ref({
    school: null,
    year: null,
@@ -265,6 +263,15 @@ const filter : Ref <API.Request.Query.Data> = ref({
    per_page: 10,
    page: 1
 })
+const { data: rows, pending: loading, refresh: fetchData } = await useLazyAsyncData(
+   'fetch-data',
+   () => getData(filter.value)
+      .then((resp) => {
+         dataLength.value = resp.total
+         return resp.data
+      })
+)
+
 const filterCount = computed(() => {
    const { page, per_page, ...rest } = filter.value
    const count = Object.values(rest).filter((r: any) => !!r).length
@@ -273,10 +280,24 @@ const filterCount = computed(() => {
 
 const yearPicker : Ref <string> = ref((useDayjs())().format('YYYY'))
 
-const schoolOptions : Ref <Util.SelectOption[]> = ref([])
-const categoryOptions : Ref <Util.SelectOption[]> = ref([])
-const typeOptions : Ref <Util.SelectOption[]> = ref([])
-const statusOptions : Ref <Util.SelectOption[]> =ref([])
+const { data: schoolOptions } = await useLazyAsyncData(
+   'fetch-school-options',
+   () => getSchoolOptions()
+)
+
+const { data: categoryOptions } = await useLazyAsyncData(
+   'fetch-category-options',
+   () => getDataCategoryOptions()
+)
+const { data: typeOptions, execute: fetchTypeOptions } = await useLazyAsyncData(
+   'fetch-type-options',
+   () => getDataTypeOptions(filter.value.category as number),
+   { immediate: false }
+)
+const { data: statusOptions } = await useLazyAsyncData(
+   'fetch-status-options',
+   () => getDataStatusOptions()
+)
 
 const actionMenu = (row: Model.Data) => ([
    [
@@ -289,7 +310,7 @@ const actionMenu = (row: Model.Data) => ([
       {
          label: 'Lihat detail',
          icon: 'i-heroicons-document-magnifying-glass',
-         click: () => useRouter().push(`/data/${row.id}`)
+         click: () => navigateTo(`/data/${row.id}`)
       },
       {
          label: 'Sunting data',
@@ -312,51 +333,13 @@ const actionMenu = (row: Model.Data) => ([
    ]
 ])
 
-onBeforeMount(async () => {
-   await fetchData()
-
-   await getSchoolOptions()
-      .then(resp => {
-         schoolOptions.value = resp
-      })
-
-   await getDataCategoryOptions()
-      .then(resp => {
-         categoryOptions.value = resp
-      })
-
-   await getDataStatusOptions()
-      .then(resp => {
-         statusOptions.value = resp
-      })
-})
-
-const fetchData = async () => {
-   loading.value = true
-   await getData(filter.value)
-      .then(resp => {
-         rows.value = resp.data
-         dataLength.value = resp.total
-      })
-      .finally(() => {
-         loading.value = false
-      })
-}
-
-const fetchTypeOptions = async (categoryId: number) => {
-   await getDataTypeOptions(categoryId)
-      .then(resp => {
-         typeOptions.value = resp
-      })
-}
-
 const onCategoryChanges = async (categoryId: number) => {
    await new Promise(async (resolve) => {
       if (!categoryId) {
          filter.value.type = null
          typeOptions.value = []
       }
-      else await fetchTypeOptions(categoryId)
+      else await fetchTypeOptions()
 
       resolve(() => {})
    })
