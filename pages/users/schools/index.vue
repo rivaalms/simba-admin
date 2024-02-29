@@ -7,7 +7,9 @@
       :loading="loading"
       filterable
       :filter-count="filterCount"
-      @fetch="onTableEmit"
+      :page="(filter.page as number)"
+      :per-page="(filter.per_page as number)"
+      @update="onTableEmit"
    >
       <template #filter>
          <div class="p-4 grid gap-4">
@@ -104,7 +106,7 @@
       </template>
 
       <template #header>
-         <div class="flex-1 flex justify-between items-center gap-4">
+         <div class="flex justify-between items-center gap-4">
             <!-- SECTION: Name -->
             <u-button-group>
                <u-input
@@ -197,6 +199,7 @@ const filter : Ref <API.Request.Query.School> = ref({
    search: null,
    supervisor: null,
    type: null,
+   page: 1,
    per_page: 10,
 })
 

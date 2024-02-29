@@ -6,10 +6,12 @@
       :loading="loading"
       :pagination="dataLength > 0"
       :total="dataLength"
-      @fetch="onTableEmit"
+      :page="(filter.page as number)"
+      :per-page="(filter.per_page as number)"
+      @update="onTableEmit"
    >
       <template #header>
-         <div class="flex-1 flex justify-between items-center gap-4">
+         <div class="flex justify-between items-center gap-4">
             <div class="flex items-center gap-4">
                <u-button-group>
                   <u-input

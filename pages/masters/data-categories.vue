@@ -6,10 +6,12 @@
       :pagination="dataLength > 0"
       :loading="loading"
       :total="dataLength"
-      @fetch="onTableEmit"
+      :page="(filter.page as number)"
+      :per-page="(filter.per_page as number)"
+      @update="onTableEmit"
    >
       <template #header>
-         <div class="flex-1 flex justify-between items-center gap-4">
+         <div class="flex justify-between items-center gap-4">
             <u-button-group>
                <u-input
                   v-model="(filter.search as string)"
@@ -84,7 +86,9 @@ const columns = [
 
 const dataLength : Ref <number> = ref(0)
 const filter : Ref <API.Request.Query.DataCategory> = ref({
-   search: null
+   search: null,
+   page: 1,
+   per_page: 10
 })
 const { data: rows, pending: loading, refresh: fetchCategories } = await useLazyAsyncData(
    'fetch-categories',

@@ -7,7 +7,9 @@
       :loading="loading"
       filterable
       :filter-count="filterCount"
-      @fetch="onTableEmit"
+      :page="(filter.page as number)"
+      :per-page="(filter.per_page as number)"
+      @update="onTableEmit"
    >
       <template #filter>
          <div class="p-4 grid gap-4">
@@ -202,12 +204,14 @@
       </template>
 
       <template #header>
-         <u-button
-            icon="i-heroicons-plus"
-            @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData())"
-         >
-            Tambah Data
-         </u-button>
+         <div class="flex items-center justify-end">
+            <u-button
+               icon="i-heroicons-plus"
+               @click.stop="store.showDialog('data-create', 'Tambah Data', null, () => fetchData())"
+            >
+               Tambah Data
+            </u-button>
+         </div>
       </template>
 
       <template #status="{ row }">
@@ -265,11 +269,14 @@ const filter : Ref <API.Request.Query.Data> = ref({
 })
 const { data: rows, pending: loading, refresh: fetchData } = await useLazyAsyncData(
    'fetch-data',
-   () => getData(filter.value)
-      .then((resp) => {
+   () => getData(filter.value),
+   {
+      transform: (resp) => {
          dataLength.value = resp.total
          return resp.data
-      })
+      },
+      default: () => [] as Model.Data[]
+   }
 )
 
 const filterCount = computed(() => {

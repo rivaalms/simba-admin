@@ -118,7 +118,7 @@
             <data-table
                :columns="studentColumns"
                :rows="students"
-               :loading="false"
+               :loading="studentsLoading"
                :total="0"
                :pagination="false"
             ></data-table>
@@ -164,7 +164,7 @@
             <data-table
                :columns="teacherColumns"
                :rows="teachers"
-               :loading="false"
+               :loading="teacherLoading"
                :total="0"
                :pagination="false"
             ></data-table>
@@ -193,7 +193,7 @@ const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
 
-const { data: students, refresh: fetchStudents } = await useLazyAsyncData(
+const { data: students, pending: studentsLoading, refresh: fetchStudents } = await useLazyAsyncData(
    'fetch-students',
    () => getSchoolStudents(studentFilter.value).then(async (resp) => await mapStudents(resp, religions)),
    {
@@ -227,7 +227,7 @@ const teacherFilter = shallowRef <API.Request.Query.SchoolTeacher> ({
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
 
-const { data: teachers, refresh: fetchTeachers } = await useLazyAsyncData(
+const { data: teachers, pending: teacherLoading, refresh: fetchTeachers } = await useLazyAsyncData(
    'fetch-teachers',
    () => getSchoolTeachers(teacherFilter.value).then(async (resp) => await mapTeachers(resp, subjects)),
    {
