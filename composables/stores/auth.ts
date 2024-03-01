@@ -5,7 +5,7 @@ type State = {
    token: string | null
 }
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore('simba-admin-auth', {
    persist: true,
 
    state: () : State => ({

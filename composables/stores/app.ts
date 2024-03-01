@@ -14,7 +14,7 @@ type State = {
    }
 }
 
-export const useAppStore = defineStore('app', {
+export const useAppStore = defineStore('simba-admin-app', {
    persist: true,
 
    state: () : State => ({
