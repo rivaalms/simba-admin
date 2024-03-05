@@ -76,99 +76,160 @@
             <p class="text-2xl">{{ totalStudents }}</p>
          </u-card>
          <u-card class="overflow visible">
-            <p class="text-sm">Jumlah Guru</p>
+            <div class="flex items-center justify-between">
+               <p class="text-sm">Jumlah Guru</p>
+
+            </div>
             <p class="text-2xl">{{ totalTeachers }}</p>
          </u-card>
       </div>
 
       <u-card class="overflow-visible">
-         <template #header>
-            <div class="flex items-center justify-between">
-               <p>Data Siswa</p>
-               <u-button
-                  variant="outline"
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('student-create', 'Perbarui Data Siswa', school, () => fetchStudents())"
-               >
-                  Perbarui data siswa
-               </u-button>
-            </div>
-         </template>
-         <div class="grid gap-4">
-            <div class="grid grid-cols-12 gap-2">
-               <date-picker
-                  v-model="yearPicker.student"
-                  class="col-span-2"
-                  :mode="['year-picker']"
-                  @update:model-value="async (val) => {
-                     yearPicker.student = val
-                     studentFilter.year = `${parseInt(val)}-${parseInt(val) + 1}`
-                     await fetchStudents()
-                  }"
-               >
-                  <u-input
-                     v-model="(studentFilter.year as string)"
-                     input-class="cursor-pointer"
-                     icon="i-heroicons-calendar-days"
-                     readonly
-                     :disabled="loading"
-                  ></u-input>
-               </date-picker>
-            </div>
-            <data-table
-               :columns="studentColumns"
-               :rows="students"
-               :loading="studentsLoading"
-               :total="0"
-               :pagination="false"
-            ></data-table>
-         </div>
-      </u-card>
+         <u-tabs :items="tabs">
+            <template #item="{ item }">
+               <div v-if="item.key == 'students'" class="py-4">
+                  <div class="grid gap-4">
+                     <div class="flex items-center justify-between">
+                        <year-picker
+                           v-model="(studentFilter.year as string)"
+                           :callback="fetchStudents"
+                        ></year-picker>
 
-      <u-card class="overflow-visible">
-         <template #header>
-            <div class="flex items-center justify-between">
-               <p>Data Guru</p>
-               <u-button
-                  variant="outline"
-                  icon="i-heroicons-plus"
-                  @click.stop="store.showDialog('teacher-create', 'Perbarui Data Guru', school, () => fetchTeachers())"
-               >
-                  Perbarui data guru
-               </u-button>
-            </div>
-         </template>
+                        <u-button
+                           variant="outline"
+                           icon="i-heroicons-plus"
+                           @click.stop="store.showDialog('student-create', 'Perbarui Data Siswa', school, () => fetchStudents().then(() => fetchStudentGrowth()))"
+                        >
+                           Perbarui data siswa
+                        </u-button>
+                     </div>
 
-         <div class="grid gap-4">
-            <div class="grid grid-cols-12 gap-2">
-               <date-picker
-                  v-model="yearPicker.teacher"
-                  class="col-span-2"
-                  :mode="['year-picker']"
-                  @update:model-value="async (val) => {
-                     yearPicker.teacher = val
-                     teacherFilter.year = `${parseInt(val)}-${parseInt(val) + 1}`
-                     await fetchTeachers()
-                  }"
-               >
-                  <u-input
-                     v-model="(teacherFilter.year as string)"
-                     input-class="cursor-pointer"
-                     icon="i-heroicons-calendar-days"
-                     readonly
-                     :disabled="loading"
-                  ></u-input>
-               </date-picker>
-            </div>
+                     <div class="max-h-96 overflow-y-auto">
+                        <data-table
+                           :columns="studentColumns"
+                           :rows="students"
+                           :loading="studentsLoading"
+                           :total="0"
+                           :pagination="false"
+                        ></data-table>
+                     </div>
 
-            <data-table
-               :columns="teacherColumns"
-               :rows="teachers"
-               :loading="teacherLoading"
-               :total="0"
-               :pagination="false"
-            ></data-table>
-         </div>
+                     <div class="grid gap-4">
+                        <div class="flex items-center justify-between">
+                           <p class="text-sm font-medium">
+                              Pertumbuhan Siswa
+                           </p>
+
+                           <div class="inline-flex gap-3">
+                              <date-picker
+                                 v-model="studentGrowthFilter.start_year"
+                                 :mode="['year-picker']"
+                                 class="!w-auto"
+                              >
+                                 <u-input
+                                    v-model="studentGrowthFilter.start_year"
+                                    input-class="cursor-pointer !w-auto"
+                                    icon="i-heroicons-calendar-days"
+                                    readonly
+                                 ></u-input>
+                              </date-picker>
+                              <span>-</span>
+                              <date-picker
+                                 v-model="studentGrowthFilter.end_year"
+                                 :mode="['year-picker']"
+                                 class="!w-auto"
+                              >
+                                 <u-input
+                                    v-model="studentGrowthFilter.end_year"
+                                    input-class="cursor-pointer !w-auto"
+                                    icon="i-heroicons-calendar-days"
+                                    readonly
+                                 ></u-input>
+                              </date-picker>
+                           </div>
+                        </div>
+                        <loading-state v-if="studentGrowthLoading"></loading-state>
+                        <apexchart
+                           v-else
+                           :options="chartOptions"
+                           :series="studentChartData"
+                        />
+                     </div>
+                  </div>
+               </div>
+
+               <div v-if="item.key == 'teachers'" class="py-4">
+                  <div class="grid gap-4">
+                     <div class="flex items-center justify-between">
+                        <year-picker
+                           v-model="(teacherFilter.year as string)"
+                           :callback="fetchTeachers"
+                        ></year-picker>
+
+                        <u-button
+                           variant="outline"
+                           icon="i-heroicons-plus"
+                           @click.stop="store.showDialog('teacher-create', 'Perbarui Data Guru', teachers, () => fetchTeachers().then(() => fetchTeacherGrowth()))"
+                        >
+                           Perbarui data guru
+                        </u-button>
+                     </div>
+
+                     <div class="max-h-96 overflow-y-auto">
+                        <data-table
+                           :columns="teacherColumns"
+                           :rows="teachers"
+                           :loading="teacherLoading"
+                           :total="0"
+                           :pagination="false"
+                        ></data-table>
+                     </div>
+
+                     <div class="grid gap-4">
+                        <div class="flex items-center justify-between">
+                           <p class="text-sm font-medium">
+                              Pertumbuhan Guru
+                           </p>
+
+                           <div class="inline-flex gap-3">
+                              <date-picker
+                                 v-model="teacherGrowthFilter.start_year"
+                                 :mode="['year-picker']"
+                                 class="!w-auto"
+                              >
+                                 <u-input
+                                    v-model="teacherGrowthFilter.start_year"
+                                    input-class="cursor-pointer !w-auto"
+                                    icon="i-heroicons-calendar-days"
+                                    readonly
+                                 ></u-input>
+                              </date-picker>
+                              <span>-</span>
+                              <date-picker
+                                 v-model="teacherGrowthFilter.end_year"
+                                 :mode="['year-picker']"
+                                 class="!w-auto"
+                              >
+                                 <u-input
+                                    v-model="teacherGrowthFilter.end_year"
+                                    input-class="cursor-pointer !w-auto"
+                                    icon="i-heroicons-calendar-days"
+                                    readonly
+                                 ></u-input>
+                              </date-picker>
+                           </div>
+                        </div>
+                        <loading-state v-if="teacherGrowthLoading"></loading-state>
+                        <apexchart
+                           v-else
+                           :options="chartOptions"
+                           :series="teacherChartData"
+                        />
+                     </div>
+                  </div>
+               </div>
+            </template>
+         </u-tabs>
       </u-card>
    </div>
 </div>
@@ -188,7 +249,7 @@ const { data: school, pending: loading, refresh: fetchSchool } = await useLazyAs
 
 const religions = await getReligions() as Util.Religion[]
 
-const studentFilter = shallowRef <API.Request.Query.SchoolStudent> ({
+const studentFilter = ref <API.Request.Query.SchoolStudent> ({
    school_id: useRoute().params.id as string,
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
@@ -222,7 +283,7 @@ const totalStudents : ComputedRef <number> = computed(() => {
 
 const subjects = await getSubjects() as Util.Subject[]
 
-const teacherFilter = shallowRef <API.Request.Query.SchoolTeacher> ({
+const teacherFilter = ref <API.Request.Query.SchoolTeacher> ({
    school_id: useRoute().params.id as string,
    year: `${dayjs().format('YYYY')}-${dayjs().add(1, 'year').format('YYYY')}`
 })
@@ -246,8 +307,92 @@ const totalTeachers : ComputedRef <number> = computed(() => {
    }, 0)
 })
 
-const yearPicker = ref <{ [key: string]: string }> ({
-   student: dayjs().format('YYYY'),
-   teacher: dayjs().format('YYYY')
+const tabs = [
+   {
+      key: 'students',
+      label: 'Siswa',
+   },
+   {
+      key: 'teachers',
+      label: 'Guru'
+   }
+]
+
+const studentGrowthFilter = ref<API.Request.Query.SchoolStudentGrowth>({
+   start_year: `${dayjs().subtract(5, 'years').year()}`,
+   end_year: `${dayjs().year()}`
 })
+const teacherGrowthFilter = ref<API.Request.Query.SchoolTeacherGrowth>({
+   start_year: `${dayjs().subtract(5, 'years').year()}`,
+   end_year: `${dayjs().year()}`
+})
+
+const { data: studentGrowth, pending: studentGrowthLoading, refresh: fetchStudentGrowth } = await useLazyAsyncData(
+   'fetch-student-growth',
+   () => getSchoolStudentsGrowth(schoolId as number, studentGrowthFilter.value),
+   {
+      watch: [() => studentGrowthFilter.value.start_year, () => studentGrowthFilter.value.end_year],
+      default: () => [] as Util.StudentGrowth[]
+   }
+)
+
+const { data: teacherGrowth, pending: teacherGrowthLoading, refresh: fetchTeacherGrowth } = await useLazyAsyncData(
+   'fetch-teacher-growth',
+   () => getSchoolTeachersGrowth(schoolId as number, teacherGrowthFilter.value),
+   {
+      watch: [() => teacherGrowthFilter.value.start_year, () => teacherGrowthFilter.value.end_year],
+      default: () => [] as Util.TeacherGrowth[]
+   }
+)
+
+const studentChartData = computed(() => {
+   const value: any = []
+
+   studentGrowth.value.forEach((item, index) => {
+      value[index] = {
+         x: item.year || '',
+         y: item.total || 0
+      }
+   })
+
+   return [{
+      name: 'Jumlah siswa',
+      data: value
+   }]
+})
+
+const teacherChartData = computed(() => {
+   const value: any = []
+
+   teacherGrowth.value.forEach((item, index) => {
+      value[index] = {
+         x: item.year || '',
+         y: item.total || 0
+      }
+   })
+
+   return [{
+      name: 'Jumlah guru',
+      data: value
+   }]
+})
+
+const chartOptions = computed(() => ({
+   chart: {
+      id: 'growthChart',
+      type: 'line'
+   },
+   colors: ['#3b82f6'],
+   dataLabels: {
+      style: {
+         fontSize: '12px',
+         fontFamily: 'Lato'
+      }
+   },
+   markers: {
+      size: 4,
+      hover: { sizeOffset: 2 }
+   },
+   stroke: { curve: 'smooth' }
+}))
 </script>

@@ -68,4 +68,11 @@ declare namespace Util {
       subject: string
       value: string | number
    }
+
+   type StudentGrowth = {
+      year: string
+      total: number
+   }
+
+   type TeacherGrowth = StudentGrowth
 }

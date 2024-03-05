@@ -41,7 +41,14 @@ declare namespace API {
             year: string | null
          }
 
+         type SchoolStudentGrowth = Wildcard & {
+            start_year: string
+            end_year: string
+         }
+
          type SchoolTeacher = SchoolStudent
+
+         type SchoolTeacherGrowth = SchoolStudentGrowth
 
          type DataStatus = Wildcard & {
             search?: string | null

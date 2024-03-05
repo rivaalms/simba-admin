@@ -44,6 +44,14 @@ export async function getSchoolStudents (payload: API.Request.Query.SchoolStuden
    return response.data
 }
 
+export async function getSchoolStudentsGrowth (schoolId: number, payload: API.Request.Query.SchoolStudentGrowth) : Promise <Util.StudentGrowth[]> {
+   const response = await $api <API.Response<Util.StudentGrowth[]>> (`/school-students/${schoolId}/growth`, {
+      method: 'GET',
+      query: payload
+   })
+   return response.data
+}
+
 export async function updateSchoolStudents (payload: API.Request.Form.SchoolStudent) : Promise <string> {
    const response = await $api <API.Response <boolean>> ('/school-students', {
       method: 'POST',
@@ -54,6 +62,14 @@ export async function updateSchoolStudents (payload: API.Request.Form.SchoolStud
 
 export async function getSchoolTeachers (payload: API.Request.Query.SchoolTeacher) : Promise <Model.School.Teacher[]> {
    const response = await $api <API.Response <Model.School.Teacher[]>> (`/school-teachers`, {
+      method: 'GET',
+      query: payload
+   })
+   return response.data
+}
+
+export async function getSchoolTeachersGrowth (schoolId: number, payload: API.Request.Query.SchoolTeacherGrowth) : Promise <Util.TeacherGrowth[]> {
+   const response = await $api <API.Response<Util.TeacherGrowth[]>> (`/school-teachers/${schoolId}/growth`, {
       method: 'GET',
       query: payload
    })
