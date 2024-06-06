@@ -72,3 +72,11 @@ export async function downloadFile (data: Model.Data) : Promise <boolean> {
       throw e
    }
 }
+
+export async function countData (query: API.Request.Query.YearRange) : Promise <Util.DataCount> {
+   const response = await $api <API.Response<Util.DataCount>>(`/data/count`, {
+      method: 'get',
+      query
+   })
+   return response.data
+}

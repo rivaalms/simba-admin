@@ -13,3 +13,11 @@ export async function deactivateUser (userId: number) : Promise <string> {
 
    return response.message!
 }
+
+export async function countUser () : Promise<Util.UserCount> {
+   const response = await $api <API.Response<Util.UserCount>> (`/users/count`, {
+      method: 'get'
+   })
+
+   return response.data
+}

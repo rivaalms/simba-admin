@@ -75,4 +75,29 @@ declare namespace Util {
    }
 
    type TeacherGrowth = StudentGrowth
+
+   type DataCountItem = {
+      name: string
+      count: number
+   }
+
+   type DataCount = {
+      total: number
+      data_by_status: DataCountItem[]
+      data_by_category: (DataCountItem & {
+         data_by_type: DataCountItem[]
+      })[]
+      start_year: string
+      end_year: string
+   }
+
+   type UserCount = {
+      total: number
+      user_by_type: {
+         school: number
+         supervisor: number
+         officer: number
+         admin: number
+      }
+   }
 }

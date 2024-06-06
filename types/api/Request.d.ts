@@ -84,6 +84,11 @@ declare namespace API {
          type Comment = {
             sort?: string | null
          }
+
+         type YearRange = {
+            start_year: string | number
+            end_year: string | number
+         }
       }
 
       namespace Form {
